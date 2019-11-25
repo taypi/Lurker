@@ -1,9 +1,10 @@
-package com.taypih.lurker;
+package com.taypih.lurker.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.taypih.lurker.R;
 import com.taypih.lurker.ui.main.MainFragment;
 
 public class MainActivity extends AppCompatActivity {

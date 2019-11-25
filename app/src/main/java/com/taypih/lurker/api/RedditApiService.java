@@ -6,6 +6,6 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface RedditApiService {
-    @GET("/r/All/hot/.json")
+    @GET("/r/All/hot/.json?limit=10")
     Call<ApiResponse> getResponse();
 }
