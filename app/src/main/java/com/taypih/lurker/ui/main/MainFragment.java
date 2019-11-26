@@ -18,9 +18,12 @@ import com.taypih.lurker.R;
 import com.taypih.lurker.repository.Repository;
 import com.taypih.lurker.ui.main.adapter.PostListAdapter;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class MainFragment extends Fragment {
 
-    private MainViewModel mViewModel;
+    private MainViewModel viewModel;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -36,7 +39,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         // TODO: Use the ViewModel
     }
 
@@ -49,6 +52,9 @@ public class MainFragment extends Fragment {
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         Repository repository = Repository.getInstance(getContext());
-        repository.requestPosts(adapter::submitList);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            repository.requestPosts().subscribe(apiResponse -> adapter.submitList(apiResponse.getPosts()), Throwable::printStackTrace);
+        });
     }
 }

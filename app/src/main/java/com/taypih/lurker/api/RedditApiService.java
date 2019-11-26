@@ -2,10 +2,10 @@ package com.taypih.lurker.api;
 
 import com.taypih.lurker.model.ApiResponse;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 
 public interface RedditApiService {
-    @GET("/r/All/hot/.json?limit=10")
-    Call<ApiResponse> getResponse();
+    @GET("/r/All/hot/.json?")
+    Observable<ApiResponse> getResponse();
 }

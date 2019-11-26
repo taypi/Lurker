@@ -13,46 +13,36 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Repository {
     private static final String BASE_URL = "https://www.reddit.com";
-    private static Repository sInstance;
-    private RedditApiService mService;
+    private static Repository instance;
+    private RedditApiService apiService;
 
     private Repository(@NonNull Context context) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
-        mService = retrofit.create(RedditApiService.class);
+        apiService = retrofit.create(RedditApiService.class);
     }
 
     synchronized public static Repository getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new Repository(context);
+        if (instance == null) {
+            instance = new Repository(context);
         }
-        return sInstance;
+        return instance;
     }
 
-    public void requestPosts(final Consumer<List<Post>> onResponse) {
-        Call<ApiResponse> call = mService.getResponse();
-        call.enqueue(new Callback<ApiResponse>() {
-            @Override
-            public void onResponse(Call<ApiResponse> call, retrofit2.Response<ApiResponse> response) {
-                if (response.body() != null) {
-                    onResponse.accept(response.body().getPosts());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Log.d("Request Error", Objects.requireNonNull(t.getMessage()));
-            }
-        });
+    public Observable<ApiResponse> requestPosts() {
+        return apiService.getResponse();
     }
 }
