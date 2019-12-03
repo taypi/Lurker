@@ -1,5 +1,8 @@
 package com.taypih.lurker.model;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -56,6 +59,18 @@ public class Post {
     public Boolean isVideo() {
         return data.isVideo;
     }
+
+    public static DiffUtil.ItemCallback<Post> DIFF_CALLBACK = new DiffUtil.ItemCallback<Post>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Post oldItem, @NonNull Post newItem) {
+            return oldItem.getId().equals(newItem.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Post oldItem, @NonNull Post newItem) {
+            return oldItem.getId().equals(newItem.getId());
+        }
+    };
 
     private class Data {
 

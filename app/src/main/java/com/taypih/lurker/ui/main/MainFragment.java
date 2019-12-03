@@ -15,11 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.taypih.lurker.R;
-import com.taypih.lurker.repository.Repository;
-import com.taypih.lurker.ui.main.adapter.PostListAdapter;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.taypih.lurker.ui.main.adapter.PostsAdapter;
 
 public class MainFragment extends Fragment {
 
@@ -39,22 +35,18 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         // TODO: Use the ViewModel
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         RecyclerView rv = view.findViewById(R.id.rv_posts);
-        PostListAdapter adapter = new PostListAdapter();
+        PostsAdapter adapter = new PostsAdapter();
         rv.setAdapter(adapter);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        Repository repository = Repository.getInstance(getContext());
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
-            repository.requestPosts().subscribe(apiResponse -> adapter.submitList(apiResponse.getPosts()), Throwable::printStackTrace);
-        });
+        viewModel.getPagedListLiveData().observe(this, adapter::submitList);
     }
 }
