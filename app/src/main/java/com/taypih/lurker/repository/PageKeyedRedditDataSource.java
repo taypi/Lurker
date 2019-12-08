@@ -18,9 +18,8 @@ public class PageKeyedRedditDataSource extends PageKeyedDataSource<String, Post>
     @Override
     public void loadInitial(@NonNull LoadInitialParams<String> params,
                             @NonNull LoadInitialCallback<String, Post> callback) {
-        repository.getTop(params.requestedLoadSize).subscribe(response -> {
-            callback.onResult(response.getPosts(), response.getBefore(), response.getAfter());
-        });
+        repository.getTop(params.requestedLoadSize)
+                .subscribe(response -> callback.onResult(response.getPosts(), response.getBefore(), response.getAfter()));
 
     }
 
@@ -34,8 +33,7 @@ public class PageKeyedRedditDataSource extends PageKeyedDataSource<String, Post>
     @Override
     public void loadAfter(@NonNull LoadParams<String> params,
                           @NonNull LoadCallback<String, Post> callback) {
-        repository.getTopAfter(params.requestedLoadSize, params.key).subscribe(response -> {
-            callback.onResult(response.getPosts(), response.getAfter());
-        });
+        repository.getTopAfter(params.requestedLoadSize, params.key)
+                .subscribe(response -> callback.onResult(response.getPosts(), response.getAfter()));
     }
 }

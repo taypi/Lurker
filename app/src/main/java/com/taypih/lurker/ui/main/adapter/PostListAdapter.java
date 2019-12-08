@@ -61,7 +61,7 @@ public class PostListAdapter extends ListAdapter<Post, PostListAdapter.ViewHolde
             mSubreddit.setText(post.getSubredditNamePrefixed());
             mNumComments.setText(String.format("%d", post.getNumComments()));
 
-            ImageUtils.setMedia(context, mPostImage, post);
+            ImageUtils.setImage(context, mPostImage, post);
         }
     }
 
