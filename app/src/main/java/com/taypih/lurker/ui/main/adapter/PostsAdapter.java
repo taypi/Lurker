@@ -20,9 +20,15 @@ import com.taypih.lurker.utils.ImageUtils;
 import java.util.Objects;
 
 public class PostsAdapter extends PagedListAdapter<Post, PostsAdapter.ViewHolder> {
+    private final PostOnClickHandler clickHandler;
 
-    public PostsAdapter() {
+    public PostsAdapter(PostOnClickHandler clickHandler) {
         super(DIFF_CALLBACK);
+        this.clickHandler = clickHandler;
+    }
+
+    public interface PostOnClickHandler {
+        void onClick(Post post);
     }
 
     @NonNull
@@ -35,36 +41,38 @@ public class PostsAdapter extends PagedListAdapter<Post, PostsAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(holder.mPostImage.getContext(), Objects.requireNonNull(getItem(position)));
+        holder.bind(holder.postImage.getContext(), Objects.requireNonNull(getItem(position)));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mUps;
-        TextView mTitle;
-        TextView mAuthor;
-        TextView mSubreddit;
-        TextView mNumComments;
-        ImageView mPostImage;
+        TextView ups;
+        TextView title;
+        TextView author;
+        TextView subreddit;
+        TextView numComments;
+        ImageView postImage;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mUps = itemView.findViewById(R.id.tv_upvotes);
-            mTitle = itemView.findViewById(R.id.tv_title);
-            mAuthor = itemView.findViewById(R.id.tv_author);
-            mSubreddit = itemView.findViewById(R.id.tv_subreddit);
-            mNumComments = itemView.findViewById(R.id.tv_comments);
-            mPostImage = itemView.findViewById(R.id.iv_post);
+            ups = itemView.findViewById(R.id.tv_upvotes);
+            title = itemView.findViewById(R.id.tv_title);
+            author = itemView.findViewById(R.id.tv_author);
+            subreddit = itemView.findViewById(R.id.tv_subreddit);
+            numComments = itemView.findViewById(R.id.tv_comments);
+            postImage = itemView.findViewById(R.id.iv_post);
+
+            itemView.setOnClickListener(v -> clickHandler.onClick(getItem(getAdapterPosition())));
         }
 
         @SuppressLint("DefaultLocale")
         void bind(Context context, Post post) {
-            mUps.setText(String.format("%d", post.getNumComments()));
-            mTitle.setText(post.getTitle());
-            mAuthor.setText(String.format("Posted by u/%s", post.getAuthor()));
-            mSubreddit.setText(post.getSubredditNamePrefixed());
-            mNumComments.setText(String.format("%d", post.getNumComments()));
+            ups.setText(String.format("%d", post.getNumComments()));
+            title.setText(post.getTitle());
+            author.setText(String.format("Posted by u/%s", post.getAuthor()));
+            subreddit.setText(post.getSubredditNamePrefixed());
+            numComments.setText(String.format("%d", post.getNumComments()));
 
-            ImageUtils.setImage(context, mPostImage, post);
+            ImageUtils.setImage(context, postImage, post);
         }
     }
 

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.taypih.lurker.R;
+import com.taypih.lurker.model.Post;
 import com.taypih.lurker.ui.main.adapter.PostsAdapter;
 
 public class MainFragment extends Fragment {
@@ -43,7 +44,17 @@ public class MainFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         RecyclerView rv = view.findViewById(R.id.rv_posts);
-        PostsAdapter adapter = new PostsAdapter();
+        PostsAdapter adapter = new PostsAdapter(post -> {
+            DetailsFragment fragment = DetailsFragment.newInstance();
+            Bundle args = new Bundle();
+            args.putParcelable(Post.class.getSimpleName(), post);
+            fragment.setArguments(args);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, fragment, DetailsFragment.class.getSimpleName())
+                    .addToBackStack(null)
+                    .commit();
+        });
         rv.setAdapter(adapter);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
