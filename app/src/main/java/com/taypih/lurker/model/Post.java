@@ -1,16 +1,24 @@
 package com.taypih.lurker.model;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
+import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.taypih.lurker.utils.UrlUtils;
+
+import retrofit2.http.Url;
 
 public class Post {
 
     @SerializedName("data")
     @Expose
     private Data data;
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        Post post = (Post) obj;
+        return post != null && data.getTitle().equals(post.getTitle());
+    }
 
     public Data getData() {
         return data;
@@ -57,20 +65,12 @@ public class Post {
     }
 
     public Boolean isVideo() {
-        return data.isVideo;
+        return data.isVideo();
     }
 
-    public static DiffUtil.ItemCallback<Post> DIFF_CALLBACK = new DiffUtil.ItemCallback<Post>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull Post oldItem, @NonNull Post newItem) {
-            return oldItem.getId().equals(newItem.getId());
-        }
-
-        @Override
-        public boolean areContentsTheSame(@NonNull Post oldItem, @NonNull Post newItem) {
-            return oldItem.getId().equals(newItem.getId());
-        }
-    };
+    public PostMedia getPostMedia() {
+        return data.getPostMedia();
+    }
 
     private class Data {
 
@@ -101,19 +101,18 @@ public class Post {
         @SerializedName("created_utc")
         @Expose
         private Double createdUtc;
-        @SerializedName("video")
+        @SerializedName("url")
         @Expose
-        private Video video;
+        private String url;
+        @SerializedName("media")
+        @Expose
+        private Media media;
         @SerializedName("is_video")
         @Expose
         private Boolean isVideo;
 
         String getTitle() {
             return title;
-        }
-
-        Media getMedia() {
-            return video != null ? video : preview;
         }
 
         public void setTitle(String title) {
@@ -184,12 +183,32 @@ public class Post {
             this.createdUtc = createdUtc;
         }
 
-        public Video getVideo() {
-            return video;
+        public PostMedia getPostMedia() {
+            if (UrlUtils.isGif(url)) {
+                return new PostMedia(null, url, false);
+            } else if (media != null && UrlUtils.isGif(media.getGifUrl())) {
+                return new PostMedia(null, media.getGifUrl(), false);
+            } else if (UrlUtils.isRedditVideo(url)) {
+                return new PostMedia(null, url, true);
+            } else if (getIsVideo() && media != null && media.getVideoFallbackUrl() != null) {
+                return new PostMedia(null, media.getGifUrl(), true);
+            } else if (preview != null && preview.getVideoUrl() != null) {
+                return new PostMedia(null, preview.getVideoUrl(), true);
+            } else if (UrlUtils.isImage(url)) {
+                return new PostMedia(null, url, false);
+            } else if (preview != null && preview.getImageUrl() != null) {
+                return new PostMedia(url, preview.getImageUrl(), false);
+            } else {
+                return new PostMedia(url, null, false);
+            }
         }
 
-        public void setVideo(Video video) {
-            this.video = video;
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public Media getMedia() {
+            return media;
         }
 
         public Boolean getIsVideo() {
@@ -198,6 +217,18 @@ public class Post {
 
         public void setIsVideo(Boolean isVideo) {
             this.isVideo = isVideo;
+        }
+
+        public boolean isGif() {
+            return UrlUtils.isGif(url) || UrlUtils.isGif(media.getGifUrl());
+        }
+
+        public String getPreviewFallbackUrl() {
+            return preview.getVideoUrl();
+        }
+
+        public Boolean isVideo() {
+            return getIsVideo()  && media.getVideoFallbackUrl() != null;
         }
     }
 }

@@ -1,61 +1,50 @@
 package com.taypih.lurker.model;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Preview extends Media {
+import java.util.List;
+
+public class Preview {
 
     @SerializedName("images")
     @Expose
     private List<Image> images = null;
     @SerializedName("reddit_video_preview")
     @Expose
-    private RedditVideoPreview redditVideoPreview;
+    private VideoPreview videoPreview;
 
-    @Override
-    public String getUrl() {
-        return redditVideoPreview != null ?
-                redditVideoPreview.fallbackUrl : images.get(0).getUrl();
+    public VideoPreview getVideoPreview() {
+        return videoPreview;
     }
 
-    @Override
-    public boolean isGif() {
-        return redditVideoPreview != null && redditVideoPreview.getIsGif();
+    public void setVideoPreview(VideoPreview videoPreview) {
+        this.videoPreview = videoPreview;
     }
 
-    @Override
-    public boolean isVideo() {
-        return false;
-    }
-
-    public List<Image> getImages() {
-        return images;
+    public String getImageUrl() {
+        if (images == null || images.isEmpty()) {
+            return null;
+        }
+        return images.get(0).getUrl();
     }
 
     public void setImages(List<Image> images) {
         this.images = images;
     }
 
-    public RedditVideoPreview getRedditVideoPreview() {
-        return redditVideoPreview;
+    public String getVideoUrl() {
+        return videoPreview == null ?
+                null : videoPreview.getFallbackUrl();
     }
 
-    public void setRedditVideoPreview(RedditVideoPreview redditVideoPreview) {
-        this.redditVideoPreview = redditVideoPreview;
-    }
-
-    public class RedditVideoPreview {
-
+    public class VideoPreview {
         @SerializedName("fallback_url")
         @Expose
         private String fallbackUrl;
         @SerializedName("duration")
         @Expose
         private Integer duration;
-        @SerializedName("is_gif")
-        @Expose
-        private Boolean isGif;
 
         public String getFallbackUrl() {
             return fallbackUrl;
@@ -72,18 +61,9 @@ public class Preview extends Media {
         public void setDuration(Integer duration) {
             this.duration = duration;
         }
-
-        public Boolean getIsGif() {
-            return isGif;
-        }
-
-        public void setIsGif(Boolean isGif) {
-            this.isGif = isGif;
-        }
     }
 
     public class Image {
-
         @SerializedName("source")
         @Expose
         private Source source;
@@ -114,7 +94,6 @@ public class Preview extends Media {
     }
 
     public class Source {
-
         @SerializedName("url")
         @Expose
         private String url;

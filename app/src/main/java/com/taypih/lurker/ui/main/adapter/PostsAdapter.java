@@ -64,7 +64,7 @@ public class PostsAdapter extends PagedListAdapter<Post, PostsAdapter.ViewHolder
             mSubreddit.setText(post.getSubredditNamePrefixed());
             mNumComments.setText(String.format("%d", post.getNumComments()));
 
-            ImageUtils.setImage(context, mPostImage, post.getMedia());
+            ImageUtils.setImage(context, mPostImage, post);
         }
     }
 
