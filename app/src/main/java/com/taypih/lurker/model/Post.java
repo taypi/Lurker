@@ -24,10 +24,6 @@ public class Post implements Parcelable {
         return data.getId();
     }
 
-    public Media getMedia() {
-        return data.getMedia();
-    }
-
     public String getTitle() {
         return data.getTitle();
     }
@@ -56,11 +52,7 @@ public class Post implements Parcelable {
         return data.getCreatedUtc();
     }
 
-    public Boolean isVideo() {
-        return data.isVideo();
-    }
-
-    public PostMedia getPostMedia() {
+    public PostMedia getContent() {
         return data.getPostMedia();
     }
 

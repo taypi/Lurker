@@ -1,7 +1,10 @@
 package com.taypih.lurker.repository;
 
 import com.taypih.lurker.api.RedditApi;
-import com.taypih.lurker.model.ApiResponse;
+import com.taypih.lurker.model.DetailResponse;
+import com.taypih.lurker.model.ListResponse;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
@@ -30,15 +33,19 @@ public class Repository {
         return instance;
     }
 
-    public Observable<ApiResponse> getTop(int limit) {
+    public Observable<ListResponse> getTop(int limit) {
         return apiService.getTop(limit);
     }
 
-    public Observable<ApiResponse> getTopAfter(int limit, String after) {
+    public Observable<ListResponse> getTopAfter(int limit, String after) {
         return apiService.getTopAfter(limit, after);
     }
 
-    public Observable<ApiResponse> getTopBefore(int limit, String before) {
+    public Observable<ListResponse> getTopBefore(int limit, String before) {
         return apiService.getTopBefore(limit, before);
+    }
+
+    public Observable<List<DetailResponse>> getPostDetails(String id) {
+        return apiService.getPostDetails(id);
     }
 }

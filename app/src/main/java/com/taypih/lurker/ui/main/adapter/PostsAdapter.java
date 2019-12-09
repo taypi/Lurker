@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.taypih.lurker.R;
+import com.taypih.lurker.databinding.ItemPostBinding;
 import com.taypih.lurker.model.Post;
 import com.taypih.lurker.utils.ImageUtils;
 
@@ -34,45 +35,33 @@ public class PostsAdapter extends PagedListAdapter<Post, PostsAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_post, parent, false);
-        return new ViewHolder(view);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        ItemPostBinding binding = ItemPostBinding.inflate(layoutInflater, parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(holder.postImage.getContext(), Objects.requireNonNull(getItem(position)));
+        holder.bind(getItem(position));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView ups;
-        TextView title;
-        TextView author;
-        TextView subreddit;
-        TextView numComments;
+        private final ItemPostBinding binding;
         ImageView postImage;
 
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ups = itemView.findViewById(R.id.tv_upvotes);
-            title = itemView.findViewById(R.id.tv_title);
-            author = itemView.findViewById(R.id.tv_author);
-            subreddit = itemView.findViewById(R.id.tv_subreddit);
-            numComments = itemView.findViewById(R.id.tv_comments);
+        ViewHolder(ItemPostBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
             postImage = itemView.findViewById(R.id.iv_post);
 
             itemView.setOnClickListener(v -> clickHandler.onClick(getItem(getAdapterPosition())));
         }
 
         @SuppressLint("DefaultLocale")
-        void bind(Context context, Post post) {
-            ups.setText(String.format("%d", post.getNumComments()));
-            title.setText(post.getTitle());
-            author.setText(String.format("Posted by u/%s", post.getAuthor()));
-            subreddit.setText(post.getSubredditNamePrefixed());
-            numComments.setText(String.format("%d", post.getNumComments()));
-
-            ImageUtils.setImage(context, postImage, post);
+        void bind(Post post) {
+            binding.setModel(post);
+            binding.executePendingBindings();
+            //ImageUtils.setImage(postImage, post);
         }
     }
 

@@ -134,10 +134,8 @@ public class Data implements Parcelable {
             return new PostMedia(null, url, false);
         } else if (media != null && UrlUtils.isGif(media.getGifUrl())) {
             return new PostMedia(null, media.getGifUrl(), false);
-        } else if (UrlUtils.isRedditVideo(url)) {
-            return new PostMedia(null, url, true);
-        } else if (getIsVideo() && media != null && media.getVideoFallbackUrl() != null) {
-            return new PostMedia(null, media.getGifUrl(), true);
+        } else if (media != null && media.getVideoFallbackUrl() != null) {
+            return new PostMedia(null, media.getVideoFallbackUrl(), true);
         } else if (preview != null && preview.getVideoUrl() != null) {
             return new PostMedia(null, preview.getVideoUrl(), true);
         } else if (UrlUtils.isImage(url)) {
