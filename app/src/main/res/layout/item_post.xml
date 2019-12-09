@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:text="@{model.author}"
+                android:text="@{String.format(@string/posted_by, model.author)}"
                 app:layout_constraintStart_toStartOf="@+id/tv_subreddit"
                 app:layout_constraintTop_toBottomOf="@+id/tv_subreddit"
                 tools:text="Posted by u/imgroot"/>

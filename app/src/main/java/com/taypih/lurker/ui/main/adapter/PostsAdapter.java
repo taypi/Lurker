@@ -1,12 +1,9 @@
 package com.taypih.lurker.ui.main.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
@@ -17,8 +14,6 @@ import com.taypih.lurker.R;
 import com.taypih.lurker.databinding.ItemPostBinding;
 import com.taypih.lurker.model.Post;
 import com.taypih.lurker.utils.ImageUtils;
-
-import java.util.Objects;
 
 public class PostsAdapter extends PagedListAdapter<Post, PostsAdapter.ViewHolder> {
     private final PostOnClickHandler clickHandler;
@@ -57,7 +52,6 @@ public class PostsAdapter extends PagedListAdapter<Post, PostsAdapter.ViewHolder
             itemView.setOnClickListener(v -> clickHandler.onClick(getItem(getAdapterPosition())));
         }
 
-        @SuppressLint("DefaultLocale")
         void bind(Post post) {
             binding.setModel(post);
             binding.executePendingBindings();
