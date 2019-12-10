@@ -32,12 +32,12 @@ public class SubredditsAdapter extends ListAdapter<Subreddit, ViewHolder> {
 
         @Override
         public boolean areItemsTheSame(@NonNull Subreddit oldItem, @NonNull Subreddit newItem) {
-            return oldItem.getId().equals(newItem.getId());
+            return oldItem.getDisplayNamePrefixed().equals(newItem.getDisplayNamePrefixed());
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull Subreddit oldItem, @NonNull Subreddit newItem) {
-            return oldItem.getId().equals(newItem.getId());
+            return oldItem.getDisplayNamePrefixed().equals(newItem.getDisplayNamePrefixed());
         }
     };
 }

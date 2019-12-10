@@ -3,16 +3,34 @@ package com.taypih.lurker.model;
 import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.taypih.lurker.db.SubredditDatabase;
 
+@Entity(tableName = SubredditDatabase.DATABASE_NAME)
 public class Subreddit {
     @SerializedName("data")
     @Expose
+    @Ignore
     private Data data;
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+    private String title;
+    private String iconImg;
+    private String displayNamePrefixed;
+
+    public Subreddit(long id, String title, String iconImg, String displayNamePrefixed) {
+        this.id = id;
+        this.title = title;
+        this.iconImg = iconImg;
+        this.displayNamePrefixed = displayNamePrefixed;
+    }
 
     public Data getData() {
         return data;
@@ -20,26 +38,29 @@ public class Subreddit {
 
     public void setData(Data data) {
         this.data = data;
+        this.title = data.getTitle();
+        this.iconImg = data.getIconImg();
+        this.displayNamePrefixed = data.getDisplayNamePrefixed();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getIconImg() {
+        return iconImg;
+    }
+
+    public String getDisplayNamePrefixed() {
+        return displayNamePrefixed;
     }
 
     public String getHeaderImg() {
         return data.getHeaderImg();
-    }
-
-    public String getTitle() {
-        return data.getTitle();
-    }
-
-    public String getIconImg() {
-        return data.getIconImg();
-    }
-
-    public String getDisplayNamePrefixed() {
-        return data.getDisplayNamePrefixed();
-    }
-
-    public String getId() {
-        return data.getId();
     }
 
     @BindingAdapter("roundImage")
