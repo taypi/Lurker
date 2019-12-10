@@ -1,6 +1,5 @@
 package com.taypih.lurker.ui.main.adapter;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
