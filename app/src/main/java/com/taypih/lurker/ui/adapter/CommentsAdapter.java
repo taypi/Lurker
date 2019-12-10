@@ -52,7 +52,7 @@ public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.ViewHo
 
         @Override
         public boolean areContentsTheSame(@NonNull Comment oldItem, @NonNull Comment newItem) {
-            return oldItem.getContent().equals(newItem.getContent());
+            return oldItem.getId().equals(newItem.getId());
         }
     };
 }
