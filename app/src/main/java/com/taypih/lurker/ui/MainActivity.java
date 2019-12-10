@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.taypih.lurker.R;
-import com.taypih.lurker.ui.list.Listfragment;
+import com.taypih.lurker.ui.list.ListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, Listfragment.newInstance(), Listfragment.class.getName())
+                    .replace(R.id.container, ListFragment.newInstance(), ListFragment.class.getName())
                     .commitNow();
         }
     }

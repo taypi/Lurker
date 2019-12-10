@@ -2,6 +2,7 @@ package com.taypih.lurker.api;
 
 import com.taypih.lurker.model.DetailResponse;
 import com.taypih.lurker.model.ListResponse;
+import com.taypih.lurker.model.SubredditResponse;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface RedditApi {
 
     @GET("/{id}.json")
     Observable<List<DetailResponse>> getPostDetails(@Path("id") String id);
+
+    @GET("/subreddits.json")
+    Observable<SubredditResponse> getSubreddits(@Query("limit") int limit);
 }

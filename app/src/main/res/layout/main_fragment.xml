@@ -28,9 +28,12 @@
                 app:expandedTitleGravity="top"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-                <include layout="@layout/content_toolbar"/>
+                <include
+                    android:id="@+id/content_toolbar"
+                    layout="@layout/content_toolbar"/>
 
                 <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 

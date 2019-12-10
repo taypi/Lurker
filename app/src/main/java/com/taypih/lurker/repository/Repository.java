@@ -3,6 +3,7 @@ package com.taypih.lurker.repository;
 import com.taypih.lurker.api.RedditApi;
 import com.taypih.lurker.model.DetailResponse;
 import com.taypih.lurker.model.ListResponse;
+import com.taypih.lurker.model.SubredditResponse;
 
 import java.util.List;
 
@@ -47,5 +48,9 @@ public class Repository {
 
     public Observable<List<DetailResponse>> getPostDetails(String id) {
         return apiService.getPostDetails(id);
+    }
+
+    public Observable<SubredditResponse> getSubreddits() {
+        return apiService.getSubreddits(50);
     }
 }

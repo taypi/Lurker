@@ -20,16 +20,17 @@ import com.taypih.lurker.databinding.MainFragmentBinding;
 import com.taypih.lurker.model.Post;
 import com.taypih.lurker.ui.adapter.PostsAdapter;
 import com.taypih.lurker.ui.details.DetailsFragment;
+import com.taypih.lurker.ui.subreddits.SubredditsFragment;
 
 import java.util.Objects;
 
-public class Listfragment extends Fragment {
+public class ListFragment extends Fragment {
 
     private ListViewModel viewModel;
     private MainFragmentBinding binding;
 
-    public static Listfragment newInstance() {
-        return new Listfragment();
+    public static ListFragment newInstance() {
+        return new ListFragment();
     }
 
     @Nullable
@@ -45,6 +46,7 @@ public class Listfragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupRecyclerView();
+        binding.toolbar .setOnClickListener(this::startSubredditsFragment);
     }
 
     /**
@@ -57,6 +59,17 @@ public class Listfragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         viewModel.getPagedListLiveData().observe(this, adapter::submitList);
+    }
+
+    /**
+     * Replace current fragment by subreddits fragment.
+     */
+    private void startSubredditsFragment(View view) {
+        Objects.requireNonNull(getFragmentManager())
+                .beginTransaction()
+                .replace(R.id.container, SubredditsFragment.newInstance(), SubredditsFragment.class.getSimpleName())
+                .addToBackStack(null)
+                .commit();
     }
 
     /**

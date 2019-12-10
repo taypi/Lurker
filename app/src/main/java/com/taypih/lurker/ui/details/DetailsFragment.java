@@ -24,7 +24,6 @@ import java.util.Objects;
 public class DetailsFragment extends Fragment {
     private DetailsFragmentBinding binding;
     private DetailsViewModel viewModel;
-    private CommentsAdapter commentsAdapter;
     private PlayerView playerView;
     private String videoUrl;
 
@@ -38,10 +37,7 @@ public class DetailsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.details_fragment, container, false);
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
-        commentsAdapter = new CommentsAdapter();
         playerView = binding.layoutPost.player;
-
-        viewModel.getComments().observe(this, commentsAdapter::submitList);
 
         return binding.getRoot();
     }
@@ -80,10 +76,12 @@ public class DetailsFragment extends Fragment {
      * Setup recycler view and its adapter.
      */
     private void setupRecyclerView() {
+        CommentsAdapter commentsAdapter = new CommentsAdapter();
         RecyclerView recyclerView = binding.rvComments;
         recyclerView.setAdapter(commentsAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        viewModel.getComments().observe(this, commentsAdapter::submitList);
     }
 
     /**
