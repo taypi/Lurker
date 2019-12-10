@@ -1,4 +1,4 @@
-package com.taypih.lurker.ui.main;
+package com.taypih.lurker.ui.list;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
@@ -18,17 +18,18 @@ import android.view.ViewGroup;
 import com.taypih.lurker.R;
 import com.taypih.lurker.databinding.MainFragmentBinding;
 import com.taypih.lurker.model.Post;
-import com.taypih.lurker.ui.main.adapter.PostsAdapter;
+import com.taypih.lurker.ui.adapter.PostsAdapter;
+import com.taypih.lurker.ui.details.DetailsFragment;
 
 import java.util.Objects;
 
-public class MainFragment extends Fragment {
+public class Listfragment extends Fragment {
 
-    private MainViewModel viewModel;
+    private ListViewModel viewModel;
     private MainFragmentBinding binding;
 
-    public static MainFragment newInstance() {
-        return new MainFragment();
+    public static Listfragment newInstance() {
+        return new Listfragment();
     }
 
     @Nullable
@@ -36,7 +37,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
-        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
         return binding.getRoot();
     }
 

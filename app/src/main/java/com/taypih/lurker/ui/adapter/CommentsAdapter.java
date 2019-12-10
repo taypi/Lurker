@@ -1,17 +1,14 @@
-package com.taypih.lurker.ui.main.adapter;
+package com.taypih.lurker.ui.adapter;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.taypih.lurker.R;
+import com.taypih.lurker.databinding.ItemCommentBinding;
 import com.taypih.lurker.model.Comment;
 
 public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.ViewHolder> {
@@ -22,9 +19,9 @@ public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.ViewHo
     @NonNull
     @Override
     public CommentsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_comment, parent, false);
-        return new ViewHolder(view);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        ItemCommentBinding binding = ItemCommentBinding.inflate(layoutInflater, parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
@@ -33,19 +30,16 @@ public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.ViewHo
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView author;
-        TextView content;
+        private final ItemCommentBinding binding;
 
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            author = itemView.findViewById(R.id.tv_comment_author);
-            content = itemView.findViewById(R.id.tv_comment_content);
+        ViewHolder(ItemCommentBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
 
-        @SuppressLint("DefaultLocale")
         void bind(Comment comment) {
-            author.setText(comment.getAuthor());
-            content.setText(comment.getContent());
+            binding.setModel(comment);
+            binding.executePendingBindings();
         }
     }
 

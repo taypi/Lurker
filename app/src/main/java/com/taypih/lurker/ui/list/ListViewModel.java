@@ -1,4 +1,4 @@
-package com.taypih.lurker.ui.main;
+package com.taypih.lurker.ui.list;
 
 import android.app.Application;
 
@@ -12,11 +12,11 @@ import com.taypih.lurker.model.Post;
 import com.taypih.lurker.repository.RedditDataSourceFactory;
 import com.taypih.lurker.repository.Repository;
 
-public class MainViewModel extends AndroidViewModel {
+public class ListViewModel extends AndroidViewModel {
     private RedditDataSourceFactory dataSourceFactory;
     private LiveData<PagedList<Post>> pagedListLiveData;
 
-    public MainViewModel(@NonNull Application application) {
+    public ListViewModel(@NonNull Application application) {
         super(application);
         dataSourceFactory = new RedditDataSourceFactory(Repository.getInstance());
         initializePaging();

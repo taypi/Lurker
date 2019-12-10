@@ -1,4 +1,4 @@
-package com.taypih.lurker.ui.main.adapter;
+package com.taypih.lurker.ui.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
