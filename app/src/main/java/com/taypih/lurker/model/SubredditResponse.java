@@ -18,12 +18,16 @@ public class SubredditResponse {
         this.data = data;
     }
 
+    public List<Subreddit> getSubreddits() {
+        return data.getSubreddits();
+    }
+
     private class Data {
         @SerializedName("children")
         @Expose
         private List<Subreddit> subreddits = null;
 
-        public List<Subreddit> getChildren() {
+        public List<Subreddit> getSubreddits() {
             return subreddits;
         }
 

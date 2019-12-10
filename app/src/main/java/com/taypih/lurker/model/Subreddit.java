@@ -1,5 +1,11 @@
 package com.taypih.lurker.model;
 
+import android.widget.ImageView;
+
+import androidx.databinding.BindingAdapter;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -34,6 +40,14 @@ public class Subreddit {
 
     public String getId() {
         return data.getId();
+    }
+
+    @BindingAdapter("roundImage")
+    public static void setImageUrl(ImageView view, String url) {
+        Glide.with(view.getContext())
+                .load(url)
+                .apply(RequestOptions.circleCropTransform())
+                .into(view);
     }
 
     private class Data {
