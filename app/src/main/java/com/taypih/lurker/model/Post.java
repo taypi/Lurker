@@ -2,7 +2,11 @@ package com.taypih.lurker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.ImageView;
 
+import androidx.databinding.BindingAdapter;
+
+import com.bumptech.glide.Glide;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -36,10 +40,6 @@ public class Post implements Parcelable {
         return data.getUps();
     }
 
-    public Boolean isOver18() {
-        return data.getOver18();
-    }
-
     public String getAuthor() {
         return data.getAuthor();
     }
@@ -48,16 +48,28 @@ public class Post implements Parcelable {
         return data.getNumComments();
     }
 
-    public Double getCreatedUtc() {
-        return data.getCreatedUtc();
-    }
-
     public PostMedia getContent() {
         return data.getPostMedia();
     }
 
+    public boolean hasImage() {
+        return !getContent().isVideo() && getContent().getMediaUrl() != null;
+    }
+
+    public boolean hasVideo() {
+        return getContent().isVideo();
+    }
+
     protected Post(Parcel in) {
         this.data = ((Data) in.readValue((Data.class.getClassLoader())));
+    }
+
+    @BindingAdapter("android:src")
+    public static void setImageUrl(ImageView view, PostMedia media) {
+        String url = (!media.isVideo() && media.getMediaUrl() != null) ? media.getMediaUrl() : "";
+        Glide.with(view.getContext())
+                .load(url)
+                .into(view);
     }
 
     @Override

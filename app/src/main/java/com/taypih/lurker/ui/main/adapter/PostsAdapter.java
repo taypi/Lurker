@@ -41,20 +41,16 @@ public class PostsAdapter extends PagedListAdapter<Post, PostsAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private final ItemPostBinding binding;
-        ImageView postImage;
 
         ViewHolder(ItemPostBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            postImage = itemView.findViewById(R.id.iv_post);
-
             itemView.setOnClickListener(v -> clickHandler.onClick(getItem(getAdapterPosition())));
         }
 
         void bind(Post post) {
             binding.setModel(post);
             binding.executePendingBindings();
-            //ImageUtils.setImage(postImage, post);
         }
     }
 

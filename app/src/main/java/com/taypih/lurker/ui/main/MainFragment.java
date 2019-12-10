@@ -27,7 +27,6 @@ public class MainFragment extends Fragment {
     private MainViewModel viewModel;
     private MainFragmentBinding binding;
 
-
     public static MainFragment newInstance() {
         return new MainFragment();
     }
@@ -47,6 +46,9 @@ public class MainFragment extends Fragment {
         setupRecyclerView();
     }
 
+    /**
+     * Setup recycler view and its adapter.
+     */
     private void setupRecyclerView() {
         PostsAdapter adapter = new PostsAdapter(this::startDetailsFragment);
         RecyclerView recyclerView = binding.rvPosts;
@@ -57,9 +59,9 @@ public class MainFragment extends Fragment {
     }
 
     /**
-     * Replace current fragment by details fragment
+     * Replace current fragment by details fragment.
      *
-     * @param post the Post passed to the other fragment
+     * @param post the Post passed to the other fragment.
      */
     private void startDetailsFragment(Post post) {
         DetailsFragment fragment = DetailsFragment.newInstance();
