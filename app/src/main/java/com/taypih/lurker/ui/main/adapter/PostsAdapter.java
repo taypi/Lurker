@@ -2,17 +2,14 @@ package com.taypih.lurker.ui.main.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.taypih.lurker.R;
 import com.taypih.lurker.databinding.ItemPostBinding;
 import com.taypih.lurker.model.Post;
-import com.taypih.lurker.utils.ImageUtils;
 
 public class PostsAdapter extends PagedListAdapter<Post, PostsAdapter.ViewHolder> {
     private final PostOnClickHandler clickHandler;

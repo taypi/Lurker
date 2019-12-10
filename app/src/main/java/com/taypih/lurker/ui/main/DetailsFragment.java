@@ -27,7 +27,6 @@ import com.taypih.lurker.R;
 import com.taypih.lurker.model.Post;
 import com.taypih.lurker.repository.Repository;
 import com.taypih.lurker.ui.main.adapter.CommentsAdapter;
-import com.taypih.lurker.utils.ImageUtils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -164,7 +163,7 @@ public class DetailsFragment extends Fragment {
         subreddit.setText(post.getSubredditNamePrefixed());
         numComments.setText(String.format("%d", post.getNumComments()));
 
-        ImageUtils.setImage(postImage, post);
+//        ImageUtils.setImage(postImage, post);
 
         RecyclerView rv = view.findViewById(R.id.rv_comments);
         CommentsAdapter adapter = new CommentsAdapter();
