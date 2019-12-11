@@ -18,7 +18,7 @@ public class ListViewModel extends AndroidViewModel {
 
     public ListViewModel(@NonNull Application application) {
         super(application);
-        dataSourceFactory = new RedditDataSourceFactory(Repository.getInstance());
+        dataSourceFactory = new RedditDataSourceFactory(Repository.getInstance(getApplication()));
         initializePaging();
     }
 

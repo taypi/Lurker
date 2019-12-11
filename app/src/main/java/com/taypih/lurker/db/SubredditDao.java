@@ -11,10 +11,12 @@ import com.taypih.lurker.model.Subreddit;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 @Dao
 public interface SubredditDao {
     @Query("SELECT * FROM subreddits")
-    List<Subreddit> findSubreddits();
+    Observable<List<Subreddit>> findSubreddits();
 
     @Insert
     void insertSubreddit(Subreddit subreddit);
@@ -24,4 +26,7 @@ public interface SubredditDao {
 
     @Delete
     void deleteSubreddit(Subreddit subreddit);
+
+    @Query("SELECT COUNT(*) from subreddits")
+    long count();
 }

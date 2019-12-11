@@ -12,25 +12,44 @@ import com.taypih.lurker.model.Subreddit;
 import com.taypih.lurker.repository.Repository;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+@SuppressLint("CheckResult")
 public class SubredditsViewModel extends AndroidViewModel {
     private MutableLiveData<List<Subreddit>> subreddits = new MutableLiveData<>();
+    private MutableLiveData<List<Subreddit>> favoriteSubreddits = new MutableLiveData<>();
+    private Executor executor = Executors.newSingleThreadExecutor();
+    private Repository repository;
 
     public SubredditsViewModel(@NonNull Application application) {
         super(application);
+        repository = Repository.getInstance(application);
     }
 
     public LiveData<List<Subreddit>> getSubreddits() {
         return subreddits;
     }
 
-    @SuppressLint("CheckResult")
+    public LiveData<List<Subreddit>> getFavoriteSubreddits() {
+        return favoriteSubreddits;
+    }
+
     public void loadSubreddits() {
-        Executors.newSingleThreadExecutor().submit(() -> {
-            Repository.getInstance().getSubreddits().subscribe(
+        executor.execute(() ->
+                repository.getSubreddits().subscribe(
                     response -> subreddits.postValue(response.getSubreddits()),
-                    Throwable::printStackTrace);
-        });
+                    Throwable::printStackTrace));
+    }
+
+    public void loadFavorites() {
+        executor.execute(() ->
+                repository.findSubreddits().subscribe(
+                        response ->  favoriteSubreddits.postValue(response),
+                        Throwable::printStackTrace));
+    }
+
+    public void setFavorite(Subreddit subreddit) {
+        executor.execute(() -> repository.setFavoriteSubreddit(subreddit));
     }
 }

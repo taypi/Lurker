@@ -49,7 +49,7 @@ public class DetailsViewModel extends AndroidViewModel {
     @SuppressLint("CheckResult")
     public void loadComments(String postId) {
         Executors.newSingleThreadExecutor().submit(() -> {
-            Repository.getInstance().getPostDetails(postId).subscribe(
+            Repository.getInstance(getApplication()).getPostDetails(postId).subscribe(
                     response -> comments.postValue(response.size() >= 1 ?
                             response.get(1).getComments() : new ArrayList<>()),
                     Throwable::printStackTrace);

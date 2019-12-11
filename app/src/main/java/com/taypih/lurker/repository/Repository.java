@@ -1,11 +1,17 @@
 package com.taypih.lurker.repository;
 
+import android.content.Context;
+
 import com.taypih.lurker.api.RedditApi;
+import com.taypih.lurker.db.SubredditDatabase;
 import com.taypih.lurker.model.DetailResponse;
 import com.taypih.lurker.model.ListResponse;
+import com.taypih.lurker.model.Subreddit;
 import com.taypih.lurker.model.SubredditResponse;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
@@ -14,10 +20,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Repository {
     private static final String BASE_URL = "https://www.reddit.com";
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
     private static Repository instance;
+    private SubredditDatabase database;
     private RedditApi apiService;
 
-    private Repository() {
+    private Repository(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -25,11 +33,12 @@ public class Repository {
                 .build();
 
         apiService = retrofit.create(RedditApi.class);
+        database = SubredditDatabase.getInstance(context);
     }
 
-    synchronized public static Repository getInstance() {
+    synchronized public static Repository getInstance(Context context) {
         if (instance == null) {
-            instance = new Repository();
+            instance = new Repository(context);
         }
         return instance;
     }
@@ -52,5 +61,13 @@ public class Repository {
 
     public Observable<SubredditResponse> getSubreddits() {
         return apiService.getSubreddits(50);
+    }
+
+    public Observable<List<Subreddit>> findSubreddits() {
+        return database.subredditDao().findSubreddits();
+    }
+
+    public void setFavoriteSubreddit(Subreddit subreddit) {
+        database.subredditDao().insertSubreddit(subreddit);
     }
 }

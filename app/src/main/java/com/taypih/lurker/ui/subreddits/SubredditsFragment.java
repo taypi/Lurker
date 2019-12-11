@@ -45,12 +45,13 @@ public class SubredditsFragment extends Fragment {
      * Setup recycler view and its adapter.
      */
     private void setupRecyclerView() {
-        SubredditsAdapter adapter = new SubredditsAdapter();
+        SubredditsAdapter adapter = new SubredditsAdapter(viewModel::setFavorite);
         RecyclerView recyclerView = binding.rvSubreddits;
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         viewModel.getSubreddits().observe(this, adapter::submitList);
+//        viewModel.getFavoriteSubreddits().observe(this, adapter::submitList);
 
     }
 }

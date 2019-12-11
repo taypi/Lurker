@@ -11,9 +11,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.taypih.lurker.db.SubredditDatabase;
 
-@Entity(tableName = SubredditDatabase.DATABASE_NAME)
+@Entity(tableName = "Subreddits")
 public class Subreddit {
     @SerializedName("data")
     @Expose
@@ -25,22 +24,18 @@ public class Subreddit {
     private String iconImg;
     private String displayNamePrefixed;
 
-    public Subreddit(long id, String title, String iconImg, String displayNamePrefixed) {
-        this.id = id;
+    public Subreddit(String title, String iconImg, String displayNamePrefixed) {
         this.title = title;
         this.iconImg = iconImg;
         this.displayNamePrefixed = displayNamePrefixed;
     }
 
-    public Data getData() {
-        return data;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setData(Data data) {
-        this.data = data;
-        this.title = data.getTitle();
-        this.iconImg = data.getIconImg();
-        this.displayNamePrefixed = data.getDisplayNamePrefixed();
+    public Data getData() {
+        return data;
     }
 
     public long getId() {
@@ -48,14 +43,23 @@ public class Subreddit {
     }
 
     public String getTitle() {
+        if (title == null) {
+            title = data.getTitle();
+        }
         return title;
     }
 
     public String getIconImg() {
+        if (iconImg == null) {
+            iconImg = data.getIconImg();
+        }
         return iconImg;
     }
 
     public String getDisplayNamePrefixed() {
+        if (displayNamePrefixed == null) {
+            displayNamePrefixed = data.getDisplayNamePrefixed();
+        }
         return displayNamePrefixed;
     }
 
