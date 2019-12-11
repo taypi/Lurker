@@ -9,7 +9,7 @@ import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import com.taypih.lurker.model.Post;
-import com.taypih.lurker.repository.RedditDataSourceFactory;
+import com.taypih.lurker.paging.RedditDataSourceFactory;
 import com.taypih.lurker.repository.Repository;
 
 public class ListViewModel extends AndroidViewModel {

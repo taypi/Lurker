@@ -1,4 +1,4 @@
-package com.taypih.lurker.repository;
+package com.taypih.lurker.paging;
 
 import android.annotation.SuppressLint;
 
@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.paging.PageKeyedDataSource;
 
 import com.taypih.lurker.model.Post;
+import com.taypih.lurker.repository.Repository;
 
 public class PageKeyedRedditDataSource extends PageKeyedDataSource<String, Post> {
     Repository repository;
