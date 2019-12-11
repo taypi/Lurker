@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 @Database(entities = {Subreddit.class}, version = 1, exportSchema = false)
 public abstract class SubredditDatabase extends RoomDatabase {
-    public static final String DATABASE_NAME = "lurker.db";
+    private static final String DATABASE_NAME = "lurker.db";
     private static SubredditDatabase sInstance;
 
     synchronized public static SubredditDatabase getInstance(Context context) {
@@ -33,10 +33,10 @@ public abstract class SubredditDatabase extends RoomDatabase {
     private void populateInitialData() {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             if (subredditDao().count() == 0) {
-                        runInTransaction(() -> subredditDao().insertSubreddit(
-                                new Subreddit("All",
-                                        "https://a.thumbs.redditmedia.com/E0Bkwgwe5TkVLflBA7WMe9fMSC7DV2UOeff-UpNJeb0.png",
-                                        "r/All")));
+                runInTransaction(() -> subredditDao().insertSubreddit(
+                        new Subreddit("All",
+                                "https://a.thumbs.redditmedia.com/E0Bkwgwe5TkVLflBA7WMe9fMSC7DV2UOeff-UpNJeb0.png",
+                                "r/All")));
             }
         });
     }
