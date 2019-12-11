@@ -50,32 +50,16 @@ public class Comment {
             return id;
         }
 
-        public void setId(String id) {
-            this.id = id;
-        }
-
         public Integer getUps() {
             return ups;
-        }
-
-        public void setUps(Integer ups) {
-            this.ups = ups;
         }
 
         public String getAuthor() {
             return author;
         }
 
-        public void setAuthor(String author) {
-            this.author = author;
-        }
-
         public String getBody() {
             return body;
-        }
-
-        public void setBody(String body) {
-            this.body = body;
         }
     }
 }

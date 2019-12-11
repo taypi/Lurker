@@ -67,8 +67,8 @@ public class DetailsFragment extends Fragment {
         binding.setModel(post);
         binding.executePendingBindings();
 
-        if (post.getContent().isVideo()) {
-            videoUrl = post.getContent().getMediaUrl();
+        if (post.hasVideo()) {
+            videoUrl = post.getMediaUrl();
         }
     }
 

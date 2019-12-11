@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@{model.subredditNamePrefixed}"
+                android:text="@{model.subredditName}"
                 app:layout_constraintStart_toEndOf="@+id/iv_subreddit"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="r/maybemaybemaybe"/>
@@ -89,7 +89,7 @@
                     android:adjustViewBounds="true"
                     android:layout_marginTop="8dp"
                     android:visibility="@{model.hasImage() ? View.VISIBLE : View.GONE}"
-                    android:src="@{model.content}"
+                    android:src="@{model.mediaUrl}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
 

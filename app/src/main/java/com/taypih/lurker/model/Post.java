@@ -4,72 +4,141 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "Posts")
 public class Post implements Parcelable {
 
     @SerializedName("data")
     @Expose
+    @Ignore
     private Data data;
+    @PrimaryKey
+    @NonNull
+    private String id;
+    private String title;
+    private String subredditName;
+    private String author;
+    private String url;
+    private String mediaUrl;
+    private String bodyText;
+    private Integer ups;
+    private Integer numComments;
+    private Boolean hasImage;
+    private Boolean hasVideo;
 
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
+    public Post(@NonNull String id, String title, String subredditName, String author, String url,
+                String mediaUrl, String bodyText, int ups, int numComments, boolean hasImage, boolean hasVideo) {
+        this.id = id;
+        this.title = title;
+        this.subredditName = subredditName;
+        this.author = author;
+        this.url = url;
+        this.mediaUrl = mediaUrl;
+        this.bodyText = bodyText;
+        this.ups = ups;
+        this.numComments = numComments;
+        this.hasImage = hasImage;
+        this.hasVideo = hasVideo;
     }
 
     public String getId() {
-        return data.getId();
+        if (id == null) {
+            id = data.getId();
+        }
+        return id;
     }
 
     public String getTitle() {
-        return data.getTitle();
+        if (title == null) {
+            title = data.getTitle();
+        }
+        return title;
     }
 
-    public String getSubredditNamePrefixed() {
-        return data.getSubredditNamePrefixed();
+    public String getSubredditName() {
+        if (subredditName == null) {
+            subredditName = data.getSubredditNamePrefixed();
+        }
+        return subredditName;
     }
 
     public Integer getUps() {
-        return data.getUps();
+        if (ups == null) {
+            ups = data.getUps();
+        }
+        return ups;
     }
 
     public String getAuthor() {
-        return data.getAuthor();
+        if (author == null) {
+            author = data.getAuthor();
+        }
+        return author;
+    }
+
+    public String getUrl() {
+        if (url == null) {
+            url = data.getPostMedia().getUrl();
+        }
+        return url;
+    }
+
+    public String getMediaUrl() {
+        if (mediaUrl == null) {
+            mediaUrl = data.getPostMedia().getMediaUrl();
+        }
+        return mediaUrl;
+    }
+
+    public String getBodyText() {
+        if (bodyText == null) {
+            bodyText = data.getSelfText();
+        }
+        return bodyText;
     }
 
     public Integer getNumComments() {
-        return data.getNumComments();
+        if (numComments == null) {
+            numComments = data.getNumComments();
+        }
+        return numComments;
     }
 
-    public PostMedia getContent() {
-        return data.getPostMedia();
+    public Boolean hasImage() {
+        if (hasImage == null) {
+            hasImage = !data.getPostMedia().isVideo() && data.getPostMedia().getMediaUrl() != null;
+        }
+        return hasImage;
     }
 
-    public boolean hasImage() {
-        return !getContent().isVideo() && getContent().getMediaUrl() != null;
-    }
-
-    public boolean hasVideo() {
-        return getContent().isVideo();
+    public Boolean hasVideo() {
+        if (hasVideo == null) {
+            hasVideo = data.getPostMedia().isVideo();
+        }
+        return hasVideo;
     }
 
     protected Post(Parcel in) {
-        this.data = ((Data) in.readValue((Data.class.getClassLoader())));
-    }
-
-    @BindingAdapter("android:src")
-    public static void setImageUrl(ImageView view, PostMedia media) {
-        String url = (!media.isVideo() && media.getMediaUrl() != null) ? media.getMediaUrl() : "";
-        Glide.with(view.getContext())
-                .load(url)
-                .into(view);
+        this.id = in.readString();
+        this.title = in.readString();
+        this.subredditName = in.readString();
+        this.author = in.readString();
+        this.url = in.readString();
+        this.mediaUrl = in.readString();
+        this.bodyText = in.readString();
+        this.ups = in.readInt();
+        this.numComments = in.readInt();
+        this.hasImage = in.readInt() == 1;
+        this.hasVideo = in.readInt() == 1;
     }
 
     @Override
@@ -79,7 +148,17 @@ public class Post implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int i) {
-        dest.writeValue(data);
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(subredditName);
+        dest.writeString(author);
+        dest.writeString(url);
+        dest.writeString(mediaUrl);
+        dest.writeString(bodyText);
+        dest.writeInt(ups);
+        dest.writeInt(numComments);
+        dest.writeInt(hasImage ? 1 : 0);
+        dest.writeInt(hasVideo ? 1 : 0);
     }
 
     public final static Parcelable.Creator<Post> CREATOR = new Creator<Post>() {
@@ -91,4 +170,12 @@ public class Post implements Parcelable {
             return (new Post[size]);
         }
     };
+
+    @BindingAdapter("android:src")
+    public static void setImageUrl(ImageView view, String mediaUrl) {
+        String url = mediaUrl != null ? mediaUrl : "";
+        Glide.with(view.getContext())
+                .load(url)
+                .into(view);
+    }
 }

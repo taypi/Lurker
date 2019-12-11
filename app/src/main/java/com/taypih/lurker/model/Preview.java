@@ -14,23 +14,11 @@ public class Preview {
     @Expose
     private VideoPreview videoPreview;
 
-    public VideoPreview getVideoPreview() {
-        return videoPreview;
-    }
-
-    public void setVideoPreview(VideoPreview videoPreview) {
-        this.videoPreview = videoPreview;
-    }
-
     public String getImageUrl() {
         if (images == null || images.isEmpty()) {
             return null;
         }
         return images.get(0).getUrl();
-    }
-
-    public void setImages(List<Image> images) {
-        this.images = images;
     }
 
     public String getVideoUrl() {
@@ -49,18 +37,6 @@ public class Preview {
         public String getFallbackUrl() {
             return fallbackUrl;
         }
-
-        public void setFallbackUrl(String fallbackUrl) {
-            this.fallbackUrl = fallbackUrl;
-        }
-
-        public Integer getDuration() {
-            return duration;
-        }
-
-        public void setDuration(Integer duration) {
-            this.duration = duration;
-        }
     }
 
     public class Image {
@@ -71,20 +47,8 @@ public class Preview {
         @Expose
         private String id;
 
-        public Source getSource() {
-            return source;
-        }
-
-        public void setSource(Source source) {
-            this.source = source;
-        }
-
         public String getId() {
             return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
         }
 
         public String getUrl() {
@@ -106,26 +70,6 @@ public class Preview {
 
         public String getUrl() {
             return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public Integer getWidth() {
-            return width;
-        }
-
-        public void setWidth(Integer width) {
-            this.width = width;
-        }
-
-        public Integer getHeight() {
-            return height;
-        }
-
-        public void setHeight(Integer height) {
-            this.height = height;
         }
     }
 }

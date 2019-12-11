@@ -11,14 +11,6 @@ public class ListResponse {
     @Expose
     private Data data;
 
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
-    }
-
     public List<Post> getPosts() {
         return data.getPosts();
     }
@@ -32,7 +24,6 @@ public class ListResponse {
     }
 
     private class Data {
-
         @SerializedName("children")
         @Expose
         private List<Post> posts = null;
@@ -47,24 +38,12 @@ public class ListResponse {
             return posts;
         }
 
-        public void setPosts(List<Post> posts) {
-            this.posts = posts;
-        }
-
         public String getAfter() {
             return after;
         }
 
-        public void setAfter(String after) {
-            this.after = after;
-        }
-
         public String getBefore() {
             return before;
-        }
-
-        public void setBefore(String before) {
-            this.before = before;
         }
     }
 

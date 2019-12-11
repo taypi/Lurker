@@ -12,22 +12,6 @@ public class Media {
     @Expose
     private RedditVideo redditVideo;
 
-    public Oembed getOembed() {
-        return oembed;
-    }
-
-    public void setOembed(Oembed oembed) {
-        this.oembed = oembed;
-    }
-
-    public RedditVideo getRedditVideo() {
-        return redditVideo;
-    }
-
-    public void setRedditVideo(RedditVideo redditVideo) {
-        this.redditVideo = redditVideo;
-    }
-
     public String getGifUrl() {
         return oembed == null ? null : oembed.getThumbnailUrl();
     }
@@ -44,10 +28,6 @@ public class Media {
         public String getThumbnailUrl() {
             return thumbnailUrl;
         }
-
-        public void setThumbnailUrl(String thumbnailUrl) {
-            this.thumbnailUrl = thumbnailUrl;
-        }
     }
 
     private class RedditVideo {
@@ -57,10 +37,6 @@ public class Media {
 
         public String getFallbackUrl() {
             return fallbackUrl;
-        }
-
-        public void setFallbackUrl(String fallbackUrl) {
-            this.fallbackUrl = fallbackUrl;
         }
     }
 }

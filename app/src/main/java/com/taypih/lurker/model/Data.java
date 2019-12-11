@@ -1,13 +1,10 @@
 package com.taypih.lurker.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.taypih.lurker.utils.UrlUtils;
 
-public class Data implements Parcelable {
+public class Data {
 
     @SerializedName("id")
     @Expose
@@ -53,48 +50,16 @@ public class Data implements Parcelable {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getSelfText() {
         return selfText;
-    }
-
-    public void setSelfText(String selfText) {
-        this.selfText = selfText;
     }
 
     public String getSubredditNamePrefixed() {
         return subredditNamePrefixed;
     }
 
-    public void setSubredditNamePrefixed(String subredditNamePrefixed) {
-        this.subredditNamePrefixed = subredditNamePrefixed;
-    }
-
     public Integer getUps() {
         return ups;
-    }
-
-    public void setUps(Integer ups) {
-        this.ups = ups;
-    }
-
-    public Boolean getOver18() {
-        return over18;
-    }
-
-    public void setOver18(Boolean over18) {
-        this.over18 = over18;
-    }
-
-    public Preview getPreview() {
-        return preview;
-    }
-
-    public void setPreview(Preview preview) {
-        this.preview = preview;
     }
 
     public String getId() {
@@ -109,24 +74,12 @@ public class Data implements Parcelable {
         return author;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public Integer getNumComments() {
         return numComments;
     }
 
-    public void setNumComments(Integer numComments) {
-        this.numComments = numComments;
-    }
-
     public Double getCreatedUtc() {
         return createdUtc;
-    }
-
-    public void setCreatedUtc(Double createdUtc) {
-        this.createdUtc = createdUtc;
     }
 
     public PostMedia getPostMedia() {
@@ -146,67 +99,4 @@ public class Data implements Parcelable {
             return new PostMedia(url, null, false);
         }
     }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Media getMedia() {
-        return media;
-    }
-
-    public Boolean getIsVideo() {
-        return isVideo;
-    }
-
-    public void setIsVideo(Boolean isVideo) {
-        this.isVideo = isVideo;
-    }
-
-    public boolean isGif() {
-        return UrlUtils.isGif(url) || UrlUtils.isGif(media.getGifUrl());
-    }
-
-    public String getPreviewFallbackUrl() {
-        return preview.getVideoUrl();
-    }
-
-    public Boolean isVideo() {
-        return getIsVideo()  && media.getVideoFallbackUrl() != null;
-    }
-
-    protected Data(Parcel in) {
-            title = in.readString();
-            selfText = in.readString();
-            subredditNamePrefixed = in.readString();
-            ups = in.readInt();
-            author = in.readString();
-            numComments = in.readInt();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int i) {
-        dest.writeString(title);
-        dest.writeString(selfText);
-        dest.writeString(subredditNamePrefixed);
-        dest.writeInt(ups);
-        dest.writeString(author);
-        dest.writeInt(numComments);
-    }
-
-    public final static Parcelable.Creator<Data> CREATOR = new Creator<Data>() {
-        public Data createFromParcel(Parcel in) {
-            return new Data(in);
-        }
-
-        public Data[] newArray(int size) {
-            return (new Data[size]);
-        }
-
-    };
 }
