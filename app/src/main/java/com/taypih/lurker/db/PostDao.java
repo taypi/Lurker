@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.taypih.lurker.model.Post;
-import com.taypih.lurker.model.Subreddit;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ import io.reactivex.Observable;
 @Dao
 public interface PostDao {
     @Query("SELECT * FROM posts")
-    Observable<List<Subreddit>> loadAll();
+    Observable<List<Post>> loadAll();
 
     @Insert
     void insert(Post post);

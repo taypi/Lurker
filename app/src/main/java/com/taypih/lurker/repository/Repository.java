@@ -4,16 +4,11 @@ import android.content.Context;
 
 import com.taypih.lurker.api.RedditApi;
 import com.taypih.lurker.db.RedditDatabase;
-import com.taypih.lurker.db.SubredditDatabase;
 import com.taypih.lurker.model.DetailResponse;
 import com.taypih.lurker.model.ListResponse;
 import com.taypih.lurker.model.Post;
-import com.taypih.lurker.model.Subreddit;
-import com.taypih.lurker.model.SubredditResponse;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
@@ -23,7 +18,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Repository {
     private static final String BASE_URL = "https://www.reddit.com";
     private static Repository instance;
-    private SubredditDatabase subredditDatabase;
     private RedditDatabase database;
     private RedditApi apiService;
 
@@ -36,7 +30,6 @@ public class Repository {
 
         apiService = retrofit.create(RedditApi.class);
         database = RedditDatabase.getInstance(context);
-        subredditDatabase = SubredditDatabase.getInstance(context);
     }
 
     synchronized public static Repository getInstance(Context context) {
@@ -60,18 +53,6 @@ public class Repository {
 
     public Observable<List<DetailResponse>> getPostDetails(String id) {
         return apiService.getPostDetails(id);
-    }
-
-    public Observable<SubredditResponse> getSubreddits() {
-        return apiService.getSubreddits(50);
-    }
-
-    public Observable<List<Subreddit>> findSubreddits() {
-        return subredditDatabase.subredditDao().findSubreddits();
-    }
-
-    public void setFavoriteSubreddit(Subreddit subreddit) {
-        subredditDatabase.subredditDao().insertSubreddit(subreddit);
     }
 
     public void setFavorite(Post post) {

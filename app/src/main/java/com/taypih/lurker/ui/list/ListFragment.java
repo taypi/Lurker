@@ -20,7 +20,6 @@ import com.taypih.lurker.databinding.MainFragmentBinding;
 import com.taypih.lurker.model.Post;
 import com.taypih.lurker.ui.adapter.PostsAdapter;
 import com.taypih.lurker.ui.details.DetailsFragment;
-import com.taypih.lurker.ui.subreddits.SubredditsFragment;
 
 import java.util.Objects;
 
@@ -58,17 +57,6 @@ public class ListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         viewModel.getPagedListLiveData().observe(this, adapter::submitList);
-    }
-
-    /**
-     * Replace current fragment by subreddits fragment.
-     */
-    private void startSubredditsFragment(View view) {
-        Objects.requireNonNull(getFragmentManager())
-                .beginTransaction()
-                .replace(R.id.container, SubredditsFragment.newInstance(), SubredditsFragment.class.getSimpleName())
-                .addToBackStack(null)
-                .commit();
     }
 
     /**
