@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 @Database(entities = {Subreddit.class}, version = 1, exportSchema = false)
 public abstract class SubredditDatabase extends RoomDatabase {
-    private static final String DATABASE_NAME = "lurker.db";
+    private static final String DATABASE_NAME = "grrrrr.db";
     private static SubredditDatabase sInstance;
 
     synchronized public static SubredditDatabase getInstance(Context context) {

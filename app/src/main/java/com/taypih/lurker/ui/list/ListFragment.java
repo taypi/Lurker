@@ -46,7 +46,6 @@ public class ListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupRecyclerView();
-        binding.toolbar .setOnClickListener(this::startSubredditsFragment);
     }
 
     /**

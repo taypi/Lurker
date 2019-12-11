@@ -19,21 +19,26 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.taypih.lurker.R;
 import com.taypih.lurker.model.Comment;
+import com.taypih.lurker.model.Post;
 import com.taypih.lurker.repository.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class DetailsViewModel extends AndroidViewModel {
     private MutableLiveData<List<Comment>> comments = new MutableLiveData<>();
-
+    private Executor executor;
+    private Repository repository;
     private SimpleExoPlayer player;
     private long playbackPosition;
     private boolean playWhenReady;
 
     public DetailsViewModel(@NonNull Application application) {
         super(application);
+        repository = Repository.getInstance(application);
+        executor = Executors.newSingleThreadExecutor();
         playbackPosition = C.TIME_UNSET;
         playWhenReady = true;
     }
@@ -48,12 +53,11 @@ public class DetailsViewModel extends AndroidViewModel {
 
     @SuppressLint("CheckResult")
     public void loadComments(String postId) {
-        Executors.newSingleThreadExecutor().submit(() -> {
-            Repository.getInstance(getApplication()).getPostDetails(postId).subscribe(
-                    response -> comments.postValue(response.size() >= 1 ?
-                            response.get(1).getComments() : new ArrayList<>()),
-                    Throwable::printStackTrace);
-        });
+        executor.execute(() ->
+                Repository.getInstance(getApplication()).getPostDetails(postId).subscribe(
+                response -> comments.postValue(response.size() >= 1 ?
+                        response.get(1).getComments() : new ArrayList<>()),
+                Throwable::printStackTrace));
     }
 
     public boolean initializePlayer(String videoUrl) {
@@ -87,5 +91,9 @@ public class DetailsViewModel extends AndroidViewModel {
             player.release();
             player = null;
         }
+    }
+
+    public void setFavorite(Post post) {
+        executor.execute(() -> repository.setFavorite(post));
     }
 }
