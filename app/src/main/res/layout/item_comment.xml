@@ -24,6 +24,7 @@
             android:id="@+id/tv_comment_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="@{model.content}"

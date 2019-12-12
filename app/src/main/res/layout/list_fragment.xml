@@ -11,6 +11,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_posts"
+            android:background="@color/colorPrimaryDark"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constrainedHeight="true"
@@ -24,16 +25,13 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentScrim="?attr/colorPrimary"
-                app:expandedTitleGravity="top"
-                app:layout_scrollFlags="scroll|enterAlways">
-
-                <include
-                    android:id="@+id/content_toolbar"
-                    layout="@layout/content_toolbar"/>
+                app:titleEnabled="false"
+                app:layout_scrollFlags="scroll|snap|enterAlways">
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
+                    app:title="@string/app_name"
+                    app:titleTextColor="@android:color/white"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 

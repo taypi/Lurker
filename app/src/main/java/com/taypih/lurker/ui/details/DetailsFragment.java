@@ -37,7 +37,7 @@ public class DetailsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.details_fragment, container, false);
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
-        playerView = binding.layoutPost.player;
+//        playerView = binding.layoutPost.player;
 
         return binding.getRoot();
     }
@@ -79,8 +79,8 @@ public class DetailsFragment extends Fragment {
         CommentsAdapter commentsAdapter = new CommentsAdapter();
         RecyclerView recyclerView = binding.rvComments;
         recyclerView.setAdapter(commentsAdapter);
-        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        recyclerView.setNestedScrollingEnabled(false);
         viewModel.getComments().observe(this, commentsAdapter::submitList);
     }
 

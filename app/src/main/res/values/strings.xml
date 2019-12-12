@@ -2,4 +2,6 @@
     <string name="app_name">Lurker</string>
     <string name="share">Share</string>
     <string name="posted_by">Posted by u/%s</string>
+    <string name="favorites">Favorites</string>
+    <string name="popular">Popular</string>
 </resources>
