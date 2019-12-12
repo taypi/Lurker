@@ -97,7 +97,6 @@ public class DetailsViewModel extends AndroidViewModel {
             }
             player.prepare(getVideoSource(videoUrl), !hasPlaybackPosition, false);
         }
-
         return true;
     }
 
@@ -119,13 +118,13 @@ public class DetailsViewModel extends AndroidViewModel {
 
     public void toggleFavoriteStatus() {
         executor.execute(() -> {
-            if (isFavorite.getValue() != null && isFavorite.getValue()) {
+            boolean wasFavorite = isFavorite.getValue() != null && isFavorite.getValue();
+            if (wasFavorite) {
                 repository.deletePost(post);
-                isFavorite.postValue(false);
             } else {
                 repository.insertPost(post);
-                isFavorite.postValue(true);
             }
+            isFavorite.postValue(!wasFavorite);
         });
     }
 

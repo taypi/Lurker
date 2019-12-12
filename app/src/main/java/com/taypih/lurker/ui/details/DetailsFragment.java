@@ -1,7 +1,6 @@
 package com.taypih.lurker.ui.details;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,7 +46,10 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.details_fragment, container, false);
+
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
+        viewModel.isFavorite().observe(this, this::updateFavoriteStatus);
+
         playerView = binding.layoutPost.player;
         setPlayerInitialValues(savedInstanceState);
 
@@ -78,15 +80,9 @@ public class DetailsFragment extends Fragment {
         }
         viewModel.setPost(post);
         viewModel.loadFavorite();
-        setupRecyclerView();
-
-        viewModel.isFavorite().observe(this, isFavorite -> {
-            if (menu != null) {
-                menu.findItem(R.id.menu_favorite).setIcon(isFavorite ? R.drawable.ic_favorite_fill : R.drawable.ic_favorite);
-            }
-        });
-
         viewModel.loadComments();
+
+        setupRecyclerView();
         binding.setModel(post);
         binding.executePendingBindings();
 
@@ -100,7 +96,7 @@ public class DetailsFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
         inflater.inflate(R.menu.details, menu);
-        menu.findItem(R.id.menu_favorite).setIcon(viewModel.isFavorite().getValue() ? R.drawable.ic_favorite_fill : R.drawable.ic_favorite);
+        updateFavoriteStatus(viewModel.isFavorite().getValue());
     }
 
     @Override
@@ -157,6 +153,13 @@ public class DetailsFragment extends Fragment {
             binding.executePendingBindings();
             binding.layoutPost.player.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT,
                     getResources().getDimensionPixelSize(R.dimen.video_height)));
+        }
+    }
+
+    private void updateFavoriteStatus(Boolean isFavorite) {
+        if (menu != null) {
+            int iconId = isFavorite ? R.drawable.ic_favorite_fill : R.drawable.ic_favorite;
+            menu.findItem(R.id.menu_favorite).setIcon(iconId);
         }
     }
 }
