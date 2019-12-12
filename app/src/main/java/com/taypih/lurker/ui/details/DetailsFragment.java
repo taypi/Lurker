@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,8 @@ import com.taypih.lurker.model.Post;
 import com.taypih.lurker.ui.adapter.CommentsAdapter;
 
 import java.util.Objects;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class DetailsFragment extends Fragment {
     private DetailsFragmentBinding binding;
@@ -128,6 +131,8 @@ public class DetailsFragment extends Fragment {
         if (viewModel.initializePlayer(videoUrl)) {
             playerView.setPlayer(viewModel.getPlayer());
             binding.executePendingBindings();
+            binding.layoutPost.player.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT,
+                    getResources().getDimensionPixelSize(R.dimen.video_height)));
         }
     }
 }
