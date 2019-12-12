@@ -62,12 +62,25 @@ public class DetailsViewModel extends AndroidViewModel {
         return player;
     }
 
+    public long getPlaybackPosition() {
+        return playbackPosition;
+    }
+
+    public boolean shouldPlayWhenReady() {
+        return playWhenReady;
+    }
+
     public void loadComments() {
         executor.execute(() ->
                 Repository.getInstance(getApplication()).getPostDetails(post.getId()).subscribe(
                 response -> comments.postValue(response.size() >= 1 ?
                         response.get(1).getComments() : new ArrayList<>()),
                 Throwable::printStackTrace));
+    }
+
+    public void setInitialValues(long playbackPosition, boolean playWhenReady) {
+        this.playbackPosition = playbackPosition;
+        this.playWhenReady = playWhenReady;
     }
 
     public boolean initializePlayer(String videoUrl) {
@@ -78,7 +91,7 @@ public class DetailsViewModel extends AndroidViewModel {
             player = ExoPlayerFactory.newSimpleInstance(getApplication());
             player.setPlayWhenReady(playWhenReady);
 
-            boolean hasPlaybackPosition = playbackPosition != C.INDEX_UNSET;
+            boolean hasPlaybackPosition = playbackPosition != C.TIME_UNSET;
             if (hasPlaybackPosition) {
                 player.seekTo(playbackPosition);
             }
@@ -96,6 +109,7 @@ public class DetailsViewModel extends AndroidViewModel {
     }
 
     public void releasePlayer() {
+        saveCurrentState();
         if (player != null) {
             player.stop(true);
             player.release();
@@ -118,5 +132,12 @@ public class DetailsViewModel extends AndroidViewModel {
     public void loadFavorite() {
         executor.execute(() -> repository.findById(post.getId()).subscribe(
                 favorite -> isFavorite.postValue(favorite != null)));
+    }
+
+    private void saveCurrentState() {
+        if (player != null) {
+            playbackPosition = player.getCurrentPosition();
+            playWhenReady = player.getPlayWhenReady();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.taypih.lurker.ui.details;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,8 @@ import java.util.Objects;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class DetailsFragment extends Fragment {
+    private static final String KEY_PLAYBACK_POSITION = "playback_position";
+    private static final String KEY_PLAY_WHEN_READY = "play_when_ready";
     private DetailsFragmentBinding binding;
     private DetailsViewModel viewModel;
     private PlayerView playerView;
@@ -46,6 +49,8 @@ public class DetailsFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.details_fragment, container, false);
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
         playerView = binding.layoutPost.player;
+        setPlayerInitialValues(savedInstanceState);
+
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(binding.detailsToolbar);
         setHasOptionsMenu(true);
 
@@ -112,6 +117,13 @@ public class DetailsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(KEY_PLAYBACK_POSITION, viewModel.getPlaybackPosition());
+        outState.putBoolean(KEY_PLAY_WHEN_READY, viewModel.shouldPlayWhenReady());
+    }
+
     /**
      * Setup recycler view and its adapter.
      */
@@ -122,6 +134,18 @@ public class DetailsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         recyclerView.setNestedScrollingEnabled(false);
         viewModel.getComments().observe(this, commentsAdapter::submitList);
+    }
+
+    /**
+     * Get player initial values from saved instance, so we can recreate its state
+     *
+     * @param savedInstanceState the instance where the previous state was saved
+     */
+    private void setPlayerInitialValues(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            viewModel.setInitialValues(savedInstanceState.getLong(KEY_PLAYBACK_POSITION),
+                                        savedInstanceState.getBoolean(KEY_PLAY_WHEN_READY));
+        }
     }
 
     /**
