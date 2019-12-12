@@ -55,7 +55,15 @@ public class Repository {
         return apiService.getPostDetails(id);
     }
 
-    public void setFavorite(Post post) {
+    public void insertPost(Post post) {
         database.postDao().insert(post);
+    }
+
+    public void deletePost(Post post) {
+        database.postDao().delete(post);
+    }
+
+    public Observable<Post> findById(String id) {
+        return database.postDao().findById(id);
     }
 }

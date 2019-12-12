@@ -15,9 +15,6 @@ import io.reactivex.Observable;
 
 @Dao
 public interface PostDao {
-    @Query("SELECT * FROM posts")
-    Observable<List<Post>> loadAll();
-
     @Insert
     void insert(Post post);
 
@@ -27,6 +24,12 @@ public interface PostDao {
     @Delete
     void delete(Post post);
 
+    @Query("SELECT * FROM posts")
+    Observable<List<Post>> loadAll();
+
     @Query("SELECT COUNT(*) from posts")
     long count();
+
+    @Query("SELECT * FROM posts where id = :id LIMIT 1")
+    Observable<Post> findById(String id);
 }

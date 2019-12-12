@@ -2,11 +2,15 @@ package com.taypih.lurker.ui.details;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -26,6 +30,7 @@ public class DetailsFragment extends Fragment {
     private DetailsViewModel viewModel;
     private PlayerView playerView;
     private String videoUrl;
+    private Menu menu;
 
     public static DetailsFragment newInstance() {
         return new DetailsFragment();
@@ -37,7 +42,9 @@ public class DetailsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.details_fragment, container, false);
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
-//        playerView = binding.layoutPost.player;
+        playerView = binding.layoutPost.player;
+        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(binding.detailsToolbar);
+        setHasOptionsMenu(true);
 
         return binding.getRoot();
     }
@@ -57,19 +64,44 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupRecyclerView();
         Post post = Objects.requireNonNull(getArguments()).getParcelable(Post.class.getSimpleName());
         if (post == null) {
             return;
         }
+        viewModel.setPost(post);
+        viewModel.loadFavorite();
+        setupRecyclerView();
 
-        viewModel.loadComments(post.getId());
+        viewModel.isFavorite().observe(this, isFavorite -> {
+            if (menu != null) {
+                menu.findItem(R.id.menu_favorite).setIcon(isFavorite ? R.drawable.ic_favorite_fill : R.drawable.ic_favorite);
+            }
+        });
+
+        viewModel.loadComments();
         binding.setModel(post);
         binding.executePendingBindings();
 
         if (post.hasVideo()) {
             videoUrl = post.getMediaUrl();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        this.menu = menu;
+        inflater.inflate(R.menu.details, menu);
+        menu.findItem(R.id.menu_favorite).setIcon(viewModel.isFavorite().getValue() ? R.drawable.ic_favorite_fill : R.drawable.ic_favorite);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_favorite) {
+            viewModel.toggleFavoriteStatus();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -90,6 +122,7 @@ public class DetailsFragment extends Fragment {
     private void initializePlayer() {
         if (viewModel.initializePlayer(videoUrl)) {
             playerView.setPlayer(viewModel.getPlayer());
+            binding.executePendingBindings();
         }
     }
 }

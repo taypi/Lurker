@@ -1,6 +1,5 @@
 package com.taypih.lurker.ui.list;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -94,7 +92,7 @@ public class ListFragment extends Fragment {
             case R.id.menu_popular:
                 setToolbarTitle(R.string.popular);
                 return true;
-            case R.id.menu_favorite:
+            case R.id.menu_favorites:
                 setToolbarTitle(R.string.favorites);
                 return true;
             default:

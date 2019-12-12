@@ -2,9 +2,12 @@ package com.taypih.lurker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Html;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -171,11 +174,22 @@ public class Post implements Parcelable {
         }
     };
 
-    @BindingAdapter("android:src")
-    public static void setImageUrl(ImageView view, String mediaUrl) {
+    @BindingAdapter("glide_src")
+    public static void setGlideSrc(ImageView view, String mediaUrl) {
         String url = mediaUrl != null ? mediaUrl : "";
         Glide.with(view.getContext())
                 .load(url)
                 .into(view);
+    }
+
+    @BindingAdapter("html_text")
+    public static void setHtmlText(TextView view, String text) {
+        if (text == null) return;
+        String htmlText = text.replaceAll("&lt;", "<")
+                .replaceAll("&gt;", ">")
+                .replaceAll("&amp;", "&")
+                .replaceAll("&quot;", "\"")
+                .replaceAll("(\r\n|\n)", "<br />");
+        view.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 }

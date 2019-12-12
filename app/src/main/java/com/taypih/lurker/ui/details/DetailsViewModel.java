@@ -27,10 +27,13 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+@SuppressLint("CheckResult")
 public class DetailsViewModel extends AndroidViewModel {
     private MutableLiveData<List<Comment>> comments = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isFavorite = new MutableLiveData<>(false);
     private Executor executor;
     private Repository repository;
+    private Post post;
     private SimpleExoPlayer player;
     private long playbackPosition;
     private boolean playWhenReady;
@@ -47,14 +50,21 @@ public class DetailsViewModel extends AndroidViewModel {
         return comments;
     }
 
+    public LiveData<Boolean> isFavorite() {
+        return isFavorite;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
     public SimpleExoPlayer getPlayer() {
         return player;
     }
 
-    @SuppressLint("CheckResult")
-    public void loadComments(String postId) {
+    public void loadComments() {
         executor.execute(() ->
-                Repository.getInstance(getApplication()).getPostDetails(postId).subscribe(
+                Repository.getInstance(getApplication()).getPostDetails(post.getId()).subscribe(
                 response -> comments.postValue(response.size() >= 1 ?
                         response.get(1).getComments() : new ArrayList<>()),
                 Throwable::printStackTrace));
@@ -93,7 +103,20 @@ public class DetailsViewModel extends AndroidViewModel {
         }
     }
 
-    public void setFavorite(Post post) {
-        executor.execute(() -> repository.setFavorite(post));
+    public void toggleFavoriteStatus() {
+        executor.execute(() -> {
+            if (isFavorite.getValue() != null && isFavorite.getValue()) {
+                repository.deletePost(post);
+                isFavorite.postValue(false);
+            } else {
+                repository.insertPost(post);
+                isFavorite.postValue(true);
+            }
+        });
+    }
+
+    public void loadFavorite() {
+        executor.execute(() -> repository.findById(post.getId()).subscribe(
+                favorite -> isFavorite.postValue(favorite != null)));
     }
 }
