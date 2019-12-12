@@ -97,11 +97,16 @@ public class DetailsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_favorite) {
-            viewModel.toggleFavoriteStatus();
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Objects.requireNonNull(getActivity()).onBackPressed();
+                return true;
+            case R.id.menu_favorite:
+                viewModel.toggleFavoriteStatus();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     /**
