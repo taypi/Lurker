@@ -24,6 +24,6 @@ public interface RedditApi {
             @Query("limit") int limit,
             @Query("before") String before);
 
-    @GET("/{id}.json")
+    @GET("/{id}.json?limit=30")
     Observable<List<DetailResponse>> getPostDetails(@Path("id") String id);
 }
