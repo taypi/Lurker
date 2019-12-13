@@ -2,6 +2,10 @@ package com.taypih.lurker.repository;
 
 import android.content.Context;
 
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
+
 import com.taypih.lurker.api.RedditApi;
 import com.taypih.lurker.db.RedditDatabase;
 import com.taypih.lurker.model.DetailResponse;
@@ -9,6 +13,8 @@ import com.taypih.lurker.model.ListResponse;
 import com.taypih.lurker.model.Post;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
@@ -20,6 +26,7 @@ public class Repository {
     private static Repository instance;
     private RedditDatabase database;
     private RedditApi apiService;
+    private Executor executor;
 
     private Repository(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -30,6 +37,7 @@ public class Repository {
 
         apiService = retrofit.create(RedditApi.class);
         database = RedditDatabase.getInstance(context);
+        executor = Executors.newSingleThreadExecutor();
     }
 
     synchronized public static Repository getInstance(Context context) {
@@ -56,14 +64,18 @@ public class Repository {
     }
 
     public void insertPost(Post post) {
-        database.postDao().insert(post);
+        executor.execute(() -> database.postDao().insert(post));
     }
 
     public void deletePost(Post post) {
-        database.postDao().delete(post);
+        executor.execute(() -> database.postDao().delete(post));
     }
 
     public Observable<Post> findById(String id) {
         return database.postDao().findById(id);
+    }
+
+    public DataSource.Factory<Integer, Post> loadAllFromDb() {
+        return database.postDao().loadAll();
     }
 }

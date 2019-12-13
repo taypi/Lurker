@@ -89,14 +89,14 @@ public class Post implements Parcelable {
     }
 
     public String getUrl() {
-        if (url == null) {
+        if (url == null && data != null) {
             url = data.getPostMedia().getUrl();
         }
         return url;
     }
 
     public String getMediaUrl() {
-        if (mediaUrl == null) {
+        if (mediaUrl == null && data != null) {
             mediaUrl = data.getPostMedia().getMediaUrl();
         }
         return mediaUrl;

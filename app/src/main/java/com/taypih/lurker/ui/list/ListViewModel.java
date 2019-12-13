@@ -13,26 +13,34 @@ import com.taypih.lurker.paging.RedditDataSourceFactory;
 import com.taypih.lurker.repository.Repository;
 
 public class ListViewModel extends AndroidViewModel {
+    private Repository repository;
     private RedditDataSourceFactory dataSourceFactory;
-    private LiveData<PagedList<Post>> pagedListLiveData;
+    private LiveData<PagedList<Post>> apiListLiveData;
+    private LiveData<PagedList<Post>> dbListLiveData;
 
     public ListViewModel(@NonNull Application application) {
         super(application);
+        repository = Repository.getInstance(application);
         dataSourceFactory = new RedditDataSourceFactory(Repository.getInstance(getApplication()));
         initializePaging();
     }
 
-    public LiveData<PagedList<Post>> getPagedListLiveData() {
-        return pagedListLiveData;
+    public LiveData<PagedList<Post>> getApiListLiveData() {
+        return apiListLiveData;
+    }
+
+    public LiveData<PagedList<Post>> getDbListLiveData() {
+        return dbListLiveData;
     }
 
     private void initializePaging() {
         PagedList.Config config =
                 new PagedList.Config.Builder()
                         .setEnablePlaceholders(true)
-                        .setInitialLoadSizeHint(3)
-                        .setPageSize(3).build();
+                        .setInitialLoadSizeHint(5)
+                        .setPageSize(20).build();
 
-        pagedListLiveData = new LivePagedListBuilder<>(dataSourceFactory, config).build();
+        apiListLiveData = new LivePagedListBuilder<>(dataSourceFactory, config).build();
+        dbListLiveData = new LivePagedListBuilder<>(repository.loadAllFromDb(), config).build();
     }
 }

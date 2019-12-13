@@ -1,5 +1,7 @@
 package com.taypih.lurker.ui.list;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +31,7 @@ public class ListFragment extends Fragment {
 
     private ListViewModel viewModel;
     private ListFragmentBinding binding;
+    private RecyclerView recyclerView;
 
     public static ListFragment newInstance() {
         return new ListFragment();
@@ -40,27 +43,53 @@ public class ListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.list_fragment, container, false);
         viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
+        loadListAccordingToPreference();
+
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(binding.toolbar);
         setHasOptionsMenu(true);
+
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setupRecyclerView();
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        cleanObservers();
+        switch (item.getItemId()) {
+            case R.id.menu_popular:
+                setToolbarTitle(R.string.popular);
+                viewModel.getApiListLiveData().observe(getViewLifecycleOwner(),
+                        setupRecyclerView()::submitList);
+                savePreference(true);
+                return true;
+            case R.id.menu_favorites:
+                setToolbarTitle(R.string.favorites);
+                viewModel.getDbListLiveData().observe(getViewLifecycleOwner(),
+                        setupRecyclerView()::submitList);
+                savePreference(false);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
-     * Setup recycler view and its adapter.
+     * Setup the recycler view with a new adapter
+     *
+     * @return the recycler view adapter
      */
-    private void setupRecyclerView() {
+    private PostsAdapter setupRecyclerView() {
         PostsAdapter adapter = new PostsAdapter(this::startDetailsFragment);
-        RecyclerView recyclerView = binding.rvPosts;
+        recyclerView = binding.rvPosts;
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        viewModel.getPagedListLiveData().observe(this, adapter::submitList);
+        return adapter;
     }
 
     /**
@@ -80,29 +109,42 @@ public class ListFragment extends Fragment {
                 .commit();
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.main, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_popular:
-                setToolbarTitle(R.string.popular);
-                return true;
-            case R.id.menu_favorites:
-                setToolbarTitle(R.string.favorites);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
-
+    /**
+     * Update toolbar title
+     *
+     * @param titleResId resource id from title
+     */
     private void setToolbarTitle(int titleResId) {
-        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity()))
-                .getSupportActionBar()).setTitle(titleResId);
+        binding.toolbar.setTitle(getString(titleResId));
+    }
+
+    /**
+     * Remove all observers from the live datas, since new observers are being added when
+     * an option item is selected.
+     */
+    private void cleanObservers() {
+        viewModel.getApiListLiveData().removeObservers(getViewLifecycleOwner());
+        viewModel.getDbListLiveData().removeObservers(getViewLifecycleOwner());
+    }
+
+    private void loadListAccordingToPreference() {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        boolean getFromApi = sharedPref.getBoolean(getString(R.string.pref_type), true);
+        if (getFromApi) {
+            setToolbarTitle(R.string.popular);
+            viewModel.getApiListLiveData().observe(getViewLifecycleOwner(),
+                    setupRecyclerView()::submitList);
+        } else {
+            setToolbarTitle(R.string.favorite);
+            viewModel.getDbListLiveData().observe(getViewLifecycleOwner(),
+                    setupRecyclerView()::submitList);
+        }
+    }
+
+    private void savePreference(boolean getFromApi) {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(getString(R.string.pref_type), getFromApi);
+        editor.apply();
     }
 }

@@ -1,5 +1,6 @@
 package com.taypih.lurker.db;
 
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -9,13 +10,11 @@ import androidx.room.Update;
 
 import com.taypih.lurker.model.Post;
 
-import java.util.List;
-
 import io.reactivex.Observable;
 
 @Dao
 public interface PostDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Post post);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -25,7 +24,7 @@ public interface PostDao {
     void delete(Post post);
 
     @Query("SELECT * FROM posts")
-    Observable<List<Post>> loadAll();
+    DataSource.Factory<Integer, Post> loadAll();
 
     @Query("SELECT COUNT(*) from posts")
     long count();
