@@ -45,10 +45,12 @@ public class DetailsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.details_fragment, container, false);
-
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
-        viewModel.isFavorite().observe(this, this::updateFavoriteStatus);
+        binding = DataBindingUtil.inflate(inflater, R.layout.details_fragment, container, false);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setViewModel(viewModel);
+
+        viewModel.isFavorite().observe(this, this::updateFavoriteIcon);
 
         playerView = binding.layoutPost.player;
         setPlayerInitialValues(savedInstanceState);
@@ -96,7 +98,7 @@ public class DetailsFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
         inflater.inflate(R.menu.details, menu);
-        updateFavoriteStatus(viewModel.isFavorite().getValue());
+        updateFavoriteIcon(viewModel.isFavorite().getValue());
     }
 
     @Override
@@ -156,7 +158,12 @@ public class DetailsFragment extends Fragment {
         }
     }
 
-    private void updateFavoriteStatus(Boolean isFavorite) {
+    /**
+     * Update favorite icon according to the current post favorite status.
+     *
+     * @param isFavorite true if the icon should be filled, false otherwise.
+     */
+    private void updateFavoriteIcon(Boolean isFavorite) {
         if (menu != null) {
             int iconId = isFavorite ? R.drawable.ic_favorite_fill : R.drawable.ic_favorite;
             menu.findItem(R.id.menu_favorite).setIcon(iconId);

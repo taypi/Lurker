@@ -7,4 +7,6 @@
     <string name="favorite">Favorite</string>
     <string name="popular">Popular</string>
     <string name="pref_type">pref_type</string>
+    <string name="video_available">[Video content available]</string>
+    <string name="error_loading_comments">There was an error loading the comments</string>
 </resources>

@@ -19,18 +19,25 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.taypih.lurker.R;
 import com.taypih.lurker.model.Comment;
+import com.taypih.lurker.model.DetailResponse;
 import com.taypih.lurker.model.Post;
 import com.taypih.lurker.repository.Repository;
+import com.taypih.lurker.ui.ViewState;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static com.taypih.lurker.ui.ViewState.ERROR;
+import static com.taypih.lurker.ui.ViewState.LOADED;
+import static com.taypih.lurker.ui.ViewState.LOADING;
+
 @SuppressLint("CheckResult")
 public class DetailsViewModel extends AndroidViewModel {
     private MutableLiveData<List<Comment>> comments = new MutableLiveData<>();
     private MutableLiveData<Boolean> isFavorite = new MutableLiveData<>(false);
+    private MutableLiveData<ViewState> viewState = new MutableLiveData<>(LOADING);
     private Executor executor;
     private Repository repository;
     private Post post;
@@ -54,6 +61,10 @@ public class DetailsViewModel extends AndroidViewModel {
         return isFavorite;
     }
 
+    public LiveData<ViewState> getViewState() {
+        return viewState;
+    }
+
     public void setPost(Post post) {
         this.post = post;
     }
@@ -72,10 +83,9 @@ public class DetailsViewModel extends AndroidViewModel {
 
     public void loadComments() {
         executor.execute(() ->
-                Repository.getInstance(getApplication()).getPostDetails(post.getId()).subscribe(
-                response -> comments.postValue(response.size() >= 1 ?
-                        response.get(1).getComments() : new ArrayList<>()),
-                Throwable::printStackTrace));
+                repository.getPostDetails(post.getId()).subscribe(
+                this::onCommentsLoaded,
+                this::onError));
     }
 
     public void setInitialValues(long playbackPosition, boolean playWhenReady) {
@@ -100,13 +110,6 @@ public class DetailsViewModel extends AndroidViewModel {
         return true;
     }
 
-    private MediaSource getVideoSource(String url) {
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getApplication(),
-                Util.getUserAgent(getApplication(), getApplication().getString(R.string.app_name)));
-        return new ProgressiveMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(Uri.parse(url));
-    }
-
     public void releasePlayer() {
         saveCurrentState();
         if (player != null) {
@@ -117,15 +120,13 @@ public class DetailsViewModel extends AndroidViewModel {
     }
 
     public void toggleFavoriteStatus() {
-        executor.execute(() -> {
-            boolean wasFavorite = isFavorite.getValue() != null && isFavorite.getValue();
-            if (wasFavorite) {
-                repository.deletePost(post);
-            } else {
-                repository.insertPost(post);
-            }
-            isFavorite.postValue(!wasFavorite);
-        });
+        boolean wasFavorite = isFavorite.getValue() != null && isFavorite.getValue();
+        isFavorite.postValue(!wasFavorite);
+        if (wasFavorite) {
+            repository.deletePost(post);
+        } else {
+            repository.insertPost(post);
+        }
     }
 
     public void loadFavorite() {
@@ -133,10 +134,28 @@ public class DetailsViewModel extends AndroidViewModel {
                 favorite -> isFavorite.postValue(favorite != null)));
     }
 
+    private MediaSource getVideoSource(String url) {
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getApplication(),
+                Util.getUserAgent(getApplication(), getApplication().getString(R.string.app_name)));
+        return new ProgressiveMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(Uri.parse(url));
+    }
+
     private void saveCurrentState() {
         if (player != null) {
             playbackPosition = player.getCurrentPosition();
             playWhenReady = player.getPlayWhenReady();
         }
+    }
+
+    private void onCommentsLoaded(List<DetailResponse> response) {
+        viewState.postValue(LOADED);
+        comments.postValue(response.size() >= 1 ?
+                response.get(1).getComments() : new ArrayList<>());
+    }
+
+    private void onError(Throwable throwable) {
+        viewState.postValue(ERROR);
+        throwable.printStackTrace();
     }
 }
