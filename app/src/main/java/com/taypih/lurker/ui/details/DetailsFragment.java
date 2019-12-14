@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.taypih.lurker.R;
 import com.taypih.lurker.databinding.DetailsFragmentBinding;
 import com.taypih.lurker.model.Post;
@@ -59,7 +61,7 @@ public class DetailsFragment extends Fragment {
 
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(binding.detailsToolbar);
         setHasOptionsMenu(true);
-
+        setupAds();
         return binding.getRoot();
     }
 
@@ -171,5 +173,13 @@ public class DetailsFragment extends Fragment {
             menu.findItem(R.id.menu_favorite).setIcon(iconId);
         }
         Objects.requireNonNull(getActivity()).startService(new Intent(getContext(), FavoriteWidgetService.class));
+    }
+
+    private void setupAds() {
+        AdView adView = binding.adView;
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        adView.loadAd(adRequest);
     }
 }

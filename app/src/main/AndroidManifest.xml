@@ -46,6 +46,10 @@
 
         <service android:name=".widget.FavoriteWidgetService" />
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4176055001753495~2109022310"/>
+
     </application>
 
 </manifest>
