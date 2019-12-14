@@ -64,12 +64,10 @@ public class PostsFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_popular:
-                setToolbarTitle(R.string.popular);
-                viewModel.setDataSource(true);
+                updateView(true, R.string.popular);
                 return true;
             case R.id.menu_favorites:
-                setToolbarTitle(R.string.favorites);
-                viewModel.setDataSource(false);
+                updateView(false, R.string.favorites);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -83,14 +81,22 @@ public class PostsFragment extends Fragment {
         recyclerView = binding.rvPosts;
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        viewModel.gePostList().observe(getViewLifecycleOwner(), list -> {
-            PostsAdapter adapter = new PostsAdapter(this::startDetailsFragment);
-            recyclerView.setAdapter(null);
-            recyclerView.setAdapter(adapter);
-            adapter.submitList(list);
-        });
+        resetAdapter();
     }
 
+    private void resetAdapter() {
+        PostsAdapter adapter = new PostsAdapter(this::startDetailsFragment);
+        recyclerView.setAdapter(adapter);
+        viewModel.gePostList().removeObservers(getViewLifecycleOwner());
+        viewModel.gePostList().observe(getViewLifecycleOwner(), adapter::submitList);
+    }
+
+    private void updateView(boolean loadFromApi, int toolbarTitle) {
+        resetAdapter();
+        viewModel.setDataSource(loadFromApi);
+        resetAdapter();
+        setToolbarTitle(toolbarTitle);
+    }
     /**
      * Replace current fragment by details fragment.
      *

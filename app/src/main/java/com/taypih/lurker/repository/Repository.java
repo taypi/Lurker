@@ -53,10 +53,6 @@ public class Repository {
         return apiService.getTopAfter(limit, after);
     }
 
-    public Observable<ListResponse> getTopBefore(int limit, String before) {
-        return apiService.getTopBefore(limit, before);
-    }
-
     public Observable<List<DetailResponse>> getPostDetails(String id) {
         return apiService.getPostDetails(id);
     }

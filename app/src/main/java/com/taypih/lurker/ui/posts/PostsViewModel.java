@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
@@ -30,11 +31,10 @@ public class PostsViewModel extends AndroidViewModel {
     private static final Map<RequestState, ViewState> stateMap = new HashMap<>();
 
     private Repository repository;
-    private boolean loadFromApi;
+    private Boolean loadFromApi;
 
-    private RedditDataSourceFactory dataSourceFactory;
     private MediatorLiveData<ViewState> viewState = new MediatorLiveData<>();
-    private MediatorLiveData<PagedList<Post>> postList = new MediatorLiveData<>();
+    private LiveData<PagedList<Post>> postList = new MediatorLiveData<>();
     private LiveData<RequestState> requestState;
     private LiveData<PagedList<Post>> apiList;
     private LiveData<PagedList<Post>> dbList;
@@ -48,14 +48,10 @@ public class PostsViewModel extends AndroidViewModel {
     public PostsViewModel(@NonNull Application application) {
         super(application);
         repository = Repository.getInstance(application);
-        loadFromApi = getPreference();
-        dataSourceFactory = new RedditDataSourceFactory(Repository.getInstance(getApplication()));
         initializePaging();
         setDataSource(getPreference());
 
-        requestState = Transformations.switchMap(dataSourceFactory.getSourceLiveData(),
-                PageKeyedRedditDataSource::getRequestState);
-        viewState.addSource(requestState, this::onDataSourceChanged);
+        viewState.addSource(requestState, this::onApiSourceChanged);
         viewState.addSource(dbList, this::onDbSourceChanged);
     }
 
@@ -68,25 +64,21 @@ public class PostsViewModel extends AndroidViewModel {
     }
 
     public void setDataSource(boolean isFromApi) {
-        if (loadFromApi == isFromApi) return;
-        loadFromApi = isFromApi;
-        savePreference();
-        if (loadFromApi) {
-            postList.removeSource(dbList);
-            postList.addSource(apiList, a -> {
-                postList.setValue(a);
-                onDataSourceChanged(requestState.getValue());
-            });
+        if (loadFromApi != null && loadFromApi == isFromApi) return;
+        savePreference(isFromApi);
+        if (isFromApi) {
+            postList = apiList;
+            onApiSourceChanged(requestState.getValue());
         } else {
-            postList.removeSource(apiList);
-            postList.addSource(dbList, a -> {
-                postList.postValue(a);
-                onDbSourceChanged(a);
-            });
+            postList = dbList;
+            onDbSourceChanged(dbList.getValue());
         }
     }
 
     private void initializePaging() {
+        RedditDataSourceFactory dataSourceFactory = new RedditDataSourceFactory(repository);
+        requestState = Transformations.switchMap(dataSourceFactory.getSourceLiveData(),
+                PageKeyedRedditDataSource::getRequestState);
         PagedList.Config config =
                 new PagedList.Config.Builder()
                         .setEnablePlaceholders(true)
@@ -97,14 +89,16 @@ public class PostsViewModel extends AndroidViewModel {
         dbList = new LivePagedListBuilder<>(repository.loadAllFromDb(), config).build();
     }
 
-    private void onDataSourceChanged(RequestState requestState) {
-        if (!loadFromApi) {
-            viewState.postValue(stateMap.get(requestState));
+    private void onApiSourceChanged(RequestState requestState) {
+        if (loadFromApi) {
+            viewState.setValue(stateMap.get(requestState));
         }
     }
 
     private void onDbSourceChanged(List<Post> posts) {
-        viewState.postValue(posts.isEmpty() ? EMPTY : LOADED);
+        if (!loadFromApi) {
+            viewState.postValue(posts == null || posts.isEmpty() ? EMPTY : LOADED);
+        }
     }
 
     private boolean getPreference() {
@@ -112,7 +106,8 @@ public class PostsViewModel extends AndroidViewModel {
         return sharedPref.getBoolean(KEY_PREF, true);
     }
 
-    private void savePreference() {
+    private void savePreference(boolean isFromApi) {
+        loadFromApi = isFromApi;
         SharedPreferences sharedPref = getApplication()
                 .getSharedPreferences(KEY_PREF, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
