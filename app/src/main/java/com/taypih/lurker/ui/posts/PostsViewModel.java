@@ -29,7 +29,7 @@ import java.util.Objects;
 import static com.taypih.lurker.ui.ViewState.*;
 
 public class PostsViewModel extends AndroidViewModel {
-    private static final String KEY_PREF = "PREF_DATA_SOURCE";
+    private static final String KEY_PREF = "pref_data_source";
     private static final Map<RequestState, ViewState> stateMap = new HashMap<>();
 
     RedditDataSourceFactory dataSourceFactory;

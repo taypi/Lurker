@@ -65,6 +65,10 @@ public class Repository {
         executor.execute(() -> database.postDao().delete(post));
     }
 
+    public long getCount() {
+        return database.postDao().count();
+    }
+
     public Observable<Post> findById(String id) {
         return database.postDao().findById(id);
     }

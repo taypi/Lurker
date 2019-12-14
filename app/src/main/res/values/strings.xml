@@ -16,4 +16,6 @@
     <string name="no_favorites">
         You don\'t have any favorites yet. \nYou can favorite posts by clicking in the heart icon.
     </string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

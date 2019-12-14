@@ -1,7 +1,5 @@
 package com.taypih.lurker.ui.posts;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
