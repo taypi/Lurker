@@ -1,14 +1,11 @@
 package com.taypih.lurker.ui.posts;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
@@ -20,16 +17,15 @@ import com.taypih.lurker.repository.Repository;
 import com.taypih.lurker.repository.RequestState;
 import com.taypih.lurker.ui.SingleLiveEvent;
 import com.taypih.lurker.ui.ViewState;
+import com.taypih.lurker.utils.PreferenceUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.taypih.lurker.ui.ViewState.*;
 
 public class PostsViewModel extends AndroidViewModel {
-    private static final String KEY_PREF = "pref_data_source";
     private static final Map<RequestState, ViewState> stateMap = new HashMap<>();
 
     RedditDataSourceFactory dataSourceFactory;
@@ -53,10 +49,11 @@ public class PostsViewModel extends AndroidViewModel {
         super(application);
         repository = Repository.getInstance(application);
         initializePaging();
-        setDataSource(getPreference());
+        setDataSource(PreferenceUtils.getListTypePref(getApplication()));
 
         viewState.addSource(requestState, this::onApiSourceChanged);
         viewState.addSource(dbList, this::onDbSourceChanged);
+        updateView.setValue(loadFromApi);
     }
 
     public LiveData<PagedList<Post>> gePostList() {
@@ -117,17 +114,8 @@ public class PostsViewModel extends AndroidViewModel {
         }
     }
 
-    private boolean getPreference() {
-        SharedPreferences sharedPref = getApplication().getSharedPreferences(KEY_PREF, Context.MODE_PRIVATE);
-        return sharedPref.getBoolean(KEY_PREF, true);
-    }
-
     private void savePreference(boolean isFromApi) {
         loadFromApi = isFromApi;
-        SharedPreferences sharedPref = getApplication()
-                .getSharedPreferences(KEY_PREF, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(KEY_PREF, loadFromApi);
-        editor.apply();
+        PreferenceUtils.saveListTypePref(getApplication(), isFromApi);
     }
 }

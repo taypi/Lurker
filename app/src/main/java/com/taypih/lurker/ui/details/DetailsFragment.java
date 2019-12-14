@@ -1,5 +1,6 @@
 package com.taypih.lurker.ui.details;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import com.taypih.lurker.R;
 import com.taypih.lurker.databinding.DetailsFragmentBinding;
 import com.taypih.lurker.model.Post;
 import com.taypih.lurker.ui.adapter.CommentsAdapter;
+import com.taypih.lurker.widget.FavoriteWidgetService;
 
 import java.util.Objects;
 
@@ -168,5 +170,6 @@ public class DetailsFragment extends Fragment {
             int iconId = isFavorite ? R.drawable.ic_favorite_fill : R.drawable.ic_favorite;
             menu.findItem(R.id.menu_favorite).setIcon(iconId);
         }
+        Objects.requireNonNull(getActivity()).startService(new Intent(getContext(), FavoriteWidgetService.class));
     }
 }
