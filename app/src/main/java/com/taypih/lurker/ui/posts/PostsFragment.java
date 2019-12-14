@@ -51,6 +51,7 @@ public class PostsFragment extends Fragment {
 
         setupRecyclerView();
 
+        viewModel.getUpdateViewEvent().observe(getViewLifecycleOwner(), this::updateView);
         return binding.getRoot();
     }
 
@@ -64,10 +65,10 @@ public class PostsFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_popular:
-                updateView(true, R.string.popular);
+                viewModel.setDataSource(true);
                 return true;
             case R.id.menu_favorites:
-                updateView(false, R.string.favorites);
+                viewModel.setDataSource(false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -91,11 +92,9 @@ public class PostsFragment extends Fragment {
         viewModel.gePostList().observe(getViewLifecycleOwner(), adapter::submitList);
     }
 
-    private void updateView(boolean loadFromApi, int toolbarTitle) {
+    private void updateView(boolean loadFromApi) {
         resetAdapter();
-        viewModel.setDataSource(loadFromApi);
-        resetAdapter();
-        setToolbarTitle(toolbarTitle);
+        setToolbarTitle(loadFromApi ? R.string.popular : R.string.favorites);
     }
     /**
      * Replace current fragment by details fragment.

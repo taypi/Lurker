@@ -9,9 +9,9 @@
     <string name="pref_type">pref_type</string>
     <string name="video_available">[Video content available]</string>
     <string name="error_loading_comments">There was an error loading the comments</string>
+    <string name="retry">Retry</string>
     <string name="error_loading_posts">
-        We were not able o communicate with the servers. \nPlease, check your connection and swipe
-        down to try again.
+        We were not able o communicate with the servers. \nPlease, check your connection try again.
     </string>
     <string name="no_favorites">
         You don\'t have any favorites yet. \nYou can favorite posts by clicking in the heart icon.

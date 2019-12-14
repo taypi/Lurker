@@ -18,11 +18,13 @@ import com.taypih.lurker.paging.PageKeyedRedditDataSource;
 import com.taypih.lurker.paging.RedditDataSourceFactory;
 import com.taypih.lurker.repository.Repository;
 import com.taypih.lurker.repository.RequestState;
+import com.taypih.lurker.ui.SingleLiveEvent;
 import com.taypih.lurker.ui.ViewState;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.taypih.lurker.ui.ViewState.*;
 
@@ -30,11 +32,13 @@ public class PostsViewModel extends AndroidViewModel {
     private static final String KEY_PREF = "PREF_DATA_SOURCE";
     private static final Map<RequestState, ViewState> stateMap = new HashMap<>();
 
+    RedditDataSourceFactory dataSourceFactory;
     private Repository repository;
     private Boolean loadFromApi;
 
     private MediatorLiveData<ViewState> viewState = new MediatorLiveData<>();
     private LiveData<PagedList<Post>> postList = new MediatorLiveData<>();
+    private SingleLiveEvent<Boolean> updateView = new SingleLiveEvent<>();
     private LiveData<RequestState> requestState;
     private LiveData<PagedList<Post>> apiList;
     private LiveData<PagedList<Post>> dbList;
@@ -63,20 +67,32 @@ public class PostsViewModel extends AndroidViewModel {
         return viewState;
     }
 
+    public LiveData<Boolean> getUpdateViewEvent() {
+        return updateView;
+    }
+
     public void setDataSource(boolean isFromApi) {
         if (loadFromApi != null && loadFromApi == isFromApi) return;
         savePreference(isFromApi);
-        if (isFromApi) {
+        updateView();
+    }
+
+    public void updateView() {
+        if (loadFromApi) {
+            if (dataSourceFactory.getSourceLiveData().getValue() != null) {
+                dataSourceFactory.getSourceLiveData().getValue().invalidate();
+            }
             postList = apiList;
             onApiSourceChanged(requestState.getValue());
         } else {
             postList = dbList;
             onDbSourceChanged(dbList.getValue());
         }
+        updateView.setValue(loadFromApi);
     }
 
     private void initializePaging() {
-        RedditDataSourceFactory dataSourceFactory = new RedditDataSourceFactory(repository);
+        dataSourceFactory = new RedditDataSourceFactory(repository);
         requestState = Transformations.switchMap(dataSourceFactory.getSourceLiveData(),
                 PageKeyedRedditDataSource::getRequestState);
         PagedList.Config config =
