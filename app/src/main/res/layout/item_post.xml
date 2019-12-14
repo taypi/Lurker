@@ -12,7 +12,7 @@
         android:id="@+id/cv_post"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/medium_margin"
         app:cardBackgroundColor="@color/colorPrimary">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,8 +23,8 @@
                 android:id="@+id/tv_subreddit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@{model.subredditName}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -34,8 +34,8 @@
                 android:id="@+id/tv_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textSize="12sp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:textSize="@dimen/small_font"
                 android:text="@{String.format(@string/posted_by, model.author)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_subreddit"
@@ -45,8 +45,8 @@
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:textSize="16sp"
+                android:layout_margin="@dimen/medium_margin"
+                android:textSize="@dimen/medium_font"
                 android:text="@{model.title}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -71,8 +71,8 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
                     <TextView
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginTop="@dimen/big_margin"
+                        android:layout_marginBottom="@dimen/big_margin"
                         android:id="@+id/pb_media"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:scaleType="fitXY"
                     android:adjustViewBounds="true"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/medium_margin"
                     android:visibility="@{model.hasImage() ? View.VISIBLE : View.GONE}"
                     app:glide_src="@{model.mediaUrl}"
                     app:layout_constraintStart_toStartOf="parent"
