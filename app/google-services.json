@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "979347753829",
+    "firebase_url": "https://lurker-b3d48.firebaseio.com",
+    "project_id": "lurker-b3d48",
+    "storage_bucket": "lurker-b3d48.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979347753829:android:33efb281f44a1f5957af8c",
+        "android_client_info": {
+          "package_name": "com.taypih.lurker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "979347753829-1os026sdt3encvnn04hhuu9ukppaa014.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGsJ83VdYvz7Fy8nOKIc2UwrstxtmTS_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "979347753829-1os026sdt3encvnn04hhuu9ukppaa014.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.taypih.lurker.R;
 import com.taypih.lurker.databinding.PostsFragmentBinding;
 import com.taypih.lurker.model.Post;
@@ -30,6 +31,7 @@ public class PostsFragment extends Fragment {
     private PostsViewModel viewModel;
     private PostsFragmentBinding binding;
     private RecyclerView recyclerView;
+    private FirebaseAnalytics firebaseAnalytics;
 
     public static PostsFragment newInstance() {
         return new PostsFragment();
@@ -39,6 +41,7 @@ public class PostsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         viewModel = ViewModelProviders.of(this).get(PostsViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.posts_fragment, container, false);
         binding.setLifecycleOwner(getViewLifecycleOwner());
@@ -64,9 +67,11 @@ public class PostsFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.menu_popular:
                 viewModel.setDataSource(true);
+                logEventToAnalytics(getString(R.string.popular));
                 return true;
             case R.id.menu_favorites:
                 viewModel.setDataSource(false);
+                logEventToAnalytics(getString(R.string.favorite));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -118,5 +123,11 @@ public class PostsFragment extends Fragment {
      */
     private void setToolbarTitle(int titleResId) {
         binding.toolbar.setTitle(getString(titleResId));
+    }
+
+    private void logEventToAnalytics(String id) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 }
