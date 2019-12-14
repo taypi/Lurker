@@ -1,6 +1,7 @@
 package com.taypih.lurker.paging;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 
@@ -22,5 +23,9 @@ public class RedditDataSourceFactory extends DataSource.Factory<String, Post> {
         PageKeyedRedditDataSource source = new PageKeyedRedditDataSource(repository);
         sourceLiveData.postValue(source);
         return source;
+    }
+
+    public LiveData<PageKeyedRedditDataSource> getSourceLiveData() {
+        return sourceLiveData;
     }
 }

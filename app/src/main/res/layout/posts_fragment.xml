@@ -4,10 +4,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.taypih.lurker.ui.ViewState"/>
+        <variable name="viewModel" type="com.taypih.lurker.ui.posts.PostsViewModel"/>
+    </data>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/pb_posts_initial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:layout_gravity="center"
+            android:visibility="@{viewModel.viewState == ViewState.LOADING ? View.VISIBLE : View.GONE}"/>
+
+        <TextView
+            android:id="@+id/tv_error_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/error_loading_posts"
+            android:textAlignment="center"
+            android:visibility="@{viewModel.viewState == ViewState.ERROR ? View.VISIBLE : View.GONE}"/>
+
+        <TextView
+            android:id="@+id/tv_no_favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_favorites"
+            android:textAlignment="center"
+            android:visibility="@{viewModel.viewState == ViewState.EMPTY ? View.VISIBLE : View.GONE}"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_posts"
@@ -15,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constrainedHeight="true"
+            android:visibility="@{viewModel.viewState == ViewState.LOADED ? View.VISIBLE : View.GONE}"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <com.google.android.material.appbar.AppBarLayout

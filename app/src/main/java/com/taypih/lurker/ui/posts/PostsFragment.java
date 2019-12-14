@@ -1,4 +1,4 @@
-package com.taypih.lurker.ui.list;
+package com.taypih.lurker.ui.posts;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,33 +20,36 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.taypih.lurker.R;
-import com.taypih.lurker.databinding.ListFragmentBinding;
+import com.taypih.lurker.databinding.PostsFragmentBinding;
 import com.taypih.lurker.model.Post;
 import com.taypih.lurker.ui.adapter.PostsAdapter;
 import com.taypih.lurker.ui.details.DetailsFragment;
 
 import java.util.Objects;
 
-public class ListFragment extends Fragment {
+public class PostsFragment extends Fragment {
 
-    private ListViewModel viewModel;
-    private ListFragmentBinding binding;
+    private PostsViewModel viewModel;
+    private PostsFragmentBinding binding;
     private RecyclerView recyclerView;
 
-    public static ListFragment newInstance() {
-        return new ListFragment();
+    public static PostsFragment newInstance() {
+        return new PostsFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.list_fragment, container, false);
-        viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
-        loadListAccordingToPreference();
+        viewModel = ViewModelProviders.of(this).get(PostsViewModel.class);
+        binding = DataBindingUtil.inflate(inflater, R.layout.posts_fragment, container, false);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setViewModel(viewModel);
 
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(binding.toolbar);
         setHasOptionsMenu(true);
+
+        setupRecyclerView();
 
         return binding.getRoot();
     }
@@ -59,19 +62,14 @@ public class ListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        cleanObservers();
         switch (item.getItemId()) {
             case R.id.menu_popular:
                 setToolbarTitle(R.string.popular);
-                viewModel.getApiListLiveData().observe(getViewLifecycleOwner(),
-                        setupRecyclerView()::submitList);
-                savePreference(true);
+                viewModel.setDataSource(true);
                 return true;
             case R.id.menu_favorites:
                 setToolbarTitle(R.string.favorites);
-                viewModel.getDbListLiveData().observe(getViewLifecycleOwner(),
-                        setupRecyclerView()::submitList);
-                savePreference(false);
+                viewModel.setDataSource(false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -80,16 +78,17 @@ public class ListFragment extends Fragment {
 
     /**
      * Setup the recycler view with a new adapter
-     *
-     * @return the recycler view adapter
      */
-    private PostsAdapter setupRecyclerView() {
-        PostsAdapter adapter = new PostsAdapter(this::startDetailsFragment);
+    private void setupRecyclerView() {
         recyclerView = binding.rvPosts;
-        recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        return adapter;
+        viewModel.gePostList().observe(getViewLifecycleOwner(), list -> {
+            PostsAdapter adapter = new PostsAdapter(this::startDetailsFragment);
+            recyclerView.setAdapter(null);
+            recyclerView.setAdapter(adapter);
+            adapter.submitList(list);
+        });
     }
 
     /**
@@ -116,35 +115,5 @@ public class ListFragment extends Fragment {
      */
     private void setToolbarTitle(int titleResId) {
         binding.toolbar.setTitle(getString(titleResId));
-    }
-
-    /**
-     * Remove all observers from the live datas, since new observers are being added when
-     * an option item is selected.
-     */
-    private void cleanObservers() {
-        viewModel.getApiListLiveData().removeObservers(getViewLifecycleOwner());
-        viewModel.getDbListLiveData().removeObservers(getViewLifecycleOwner());
-    }
-
-    private void loadListAccordingToPreference() {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        boolean getFromApi = sharedPref.getBoolean(getString(R.string.pref_type), true);
-        if (getFromApi) {
-            setToolbarTitle(R.string.popular);
-            viewModel.getApiListLiveData().observe(getViewLifecycleOwner(),
-                    setupRecyclerView()::submitList);
-        } else {
-            setToolbarTitle(R.string.favorite);
-            viewModel.getDbListLiveData().observe(getViewLifecycleOwner(),
-                    setupRecyclerView()::submitList);
-        }
-    }
-
-    private void savePreference(boolean getFromApi) {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(getString(R.string.pref_type), getFromApi);
-        editor.apply();
     }
 }

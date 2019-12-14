@@ -3,8 +3,6 @@ package com.taypih.lurker.repository;
 import android.content.Context;
 
 import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
 
 import com.taypih.lurker.api.RedditApi;
 import com.taypih.lurker.db.RedditDatabase;
